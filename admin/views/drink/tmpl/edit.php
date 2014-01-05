@@ -34,30 +34,18 @@ $params = json_decode($params);
 if (!isset($params->show_publishing_options))
 {
 	$params->show_publishing_options = '1';
-	$params->show_dish_options = '1';
-	$params->show_images_backend = '0';
-	$params->show_images_frontend = '0';
+	$params->show_drink_options = '1';
 }
 
-// Check if the dish uses configuration settings besides global. If so, use them.
+// Check if the drink uses configuration settings besides global. If so, use them.
 if (isset($this->item->params['show_publishing_options']) && $this->item->params['show_publishing_options'] != '')
 {
 	$params->show_publishing_options = $this->item->params['show_publishing_options'];
 }
 
-if (isset($this->item->params['show_dish_options']) && $this->item->params['show_dish_options'] != '')
+if (isset($this->item->params['show_drink_options']) && $this->item->params['show_drink_options'] != '')
 {
-	$params->show_dish_options = $this->item->params['show_dish_options'];
-}
-
-if (isset($this->item->params['show_images_frontend']) && $this->item->params['show_images_frontend'] != '')
-{
-	$params->show_images_frontend = $this->item->params['show_images_frontend'];
-}
-
-if (isset($this->item->params['show_images_backend']) && $this->item->params['show_images_backend'] != '')
-{
-	$params->show_images_backend = $this->item->params['show_images_backend'];
+	$params->show_drink_options = $this->item->params['show_drink_options'];
 }
 
 // Add JavaScript Frameworks.
@@ -68,7 +56,7 @@ JHtml::script('com_restaurant/jquery.maskMoney.min.js', false, true);
 ?>
 <script type="text/javascript">
 	Joomla.submitbutton = function(task) {
-		if (task == 'dish.cancel' || document.formvalidator.isValid(document.id('item-form'))) {
+		if (task == 'drink.cancel' || document.formvalidator.isValid(document.id('item-form'))) {
 			<?php echo $this->form->getField('description')->save(); ?>
 			Joomla.submitform(task, document.getElementById('item-form'));
 		}
@@ -87,7 +75,7 @@ JHtml::script('com_restaurant/jquery.maskMoney.min.js', false, true);
 	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
 	<div class="form-horizontal">
 		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'general')); ?>
-			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'general', JText::_('COM_RESTAURANT_FIELDSET_DISH_CONTENT', true)); ?>
+			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'general', JText::_('COM_RESTAURANT_FIELDSET_DRINK_CONTENT', true)); ?>
 				<div class="row-fluid">
 					<div class="span9">
 						<fieldset class="adminform">
@@ -115,27 +103,13 @@ JHtml::script('com_restaurant/jquery.maskMoney.min.js', false, true);
 				<?php echo JHtml::_('bootstrap.endTab'); ?>
 			<?php endif; ?>
 
-			<?php // Do not show the images and links options if the edit form is configured not to. ?>
-			<?php if ($params->show_images_backend == 1): ?>
-				<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'images', JText::_('COM_RESTAURANT_FIELDSET_IMAGES', true)); ?>
-					<div class="row-fluid form-horizontal-desktop">
-						<div class="span6">
-							<?php echo $this->form->getControlGroup('images'); ?>
-							<?php foreach ($this->form->getGroup('images') as $field): ?>
-								<?php echo $field->getControlGroup(); ?>
-							<?php endforeach; ?>
-						</div>
-					</div>
-				<?php echo JHtml::_('bootstrap.endTab'); ?>
-			<?php endif; ?>
-
 			<?php if (JLanguageAssociations::isEnabled()): ?>
 				<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'associations', JText::_('JGLOBAL_FIELDSET_ASSOCIATIONS', true)); ?>
 					<?php echo JLayoutHelper::render('joomla.edit.associations', $this); ?>
 				<?php echo JHtml::_('bootstrap.endTab'); ?>
 			<?php endif; ?>
 
-			<?php $this->show_options = $params->show_dish_options; ?>
+			<?php $this->show_options = $params->show_drink_options; ?>
 			<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
 			<?php if ($this->canDo->get('core.admin')): ?>

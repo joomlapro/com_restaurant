@@ -309,6 +309,123 @@ class Com_RestaurantInstallerScript
 			$table->save($content_types);
 		}
 
+		// Adding content type for drinks.
+		$table = JTable::getInstance('Contenttype', 'JTable');
+
+		if (!$table->load(array('type_alias' => 'com_restaurant.drink')))
+		{
+			// Table column.
+			$special = new stdClass;
+			$special->dbtable = '#__restaurant_drinks';
+			$special->key     = 'id';
+			$special->type    = 'Drink';
+			$special->prefix  = 'RestaurantTable';
+			$special->config  = 'array()';
+
+			$common = new stdClass;
+			$common->dbtable  = '#__ucm_content';
+			$common->key      = 'ucm_id';
+			$common->type     = 'Corecontent';
+			$common->prefix   = 'JTable';
+			$common->config   = 'array()';
+
+			$table_object = new stdClass;
+			$table_object->special = $special;
+			$table_object->common  = $common;
+
+			// Field mappings column.
+			$common = new stdClass;
+			$common->core_content_item_id = 'id';
+			$common->core_title           = 'title';
+			$common->core_state           = 'state';
+			$common->core_alias           = 'alias';
+			$common->core_created_time    = 'created';
+			$common->core_modified_time   = 'modified';
+			$common->core_body            = 'description';
+			$common->core_hits            = 'hits';
+			$common->core_publish_up      = 'publish_up';
+			$common->core_publish_down    = 'publish_down';
+			$common->core_access          = 'access';
+			$common->core_params          = 'params';
+			$common->core_featured        = null;
+			$common->core_metadata        = 'metadata';
+			$common->core_language        = 'language';
+			$common->core_images          = null;
+			$common->core_urls            = null;
+			$common->core_version         = 'version';
+			$common->core_ordering        = 'ordering';
+			$common->core_metakey         = 'metakey';
+			$common->core_metadesc        = 'metadesc';
+			$common->core_catid           = null;
+			$common->core_xreference      = 'xreference';
+			$common->asset_id             = 'asset_id';
+
+			$field_mappings = new stdClass;
+			$field_mappings->common  = $common;
+			$field_mappings->special = new stdClass;
+
+			// Content history options column.
+			$hideFields = array(
+				'asset_id',
+				'checked_out',
+				'checked_out_time',
+				'version'
+			);
+
+			$ignoreChanges = array(
+				'modified_by',
+				'modified',
+				'checked_out',
+				'checked_out_time',
+				'version',
+				'hits'
+			);
+
+			$convertToInt = array(
+				'publish_up',
+				'publish_down',
+				'ordering'
+			);
+
+			$displayLookup = array(
+				array(
+					'sourceColumn' => 'created_by',
+					'targetTable' => '#__users',
+					'targetColumn' => 'id',
+					'displayColumn' => 'name'
+				),
+				array(
+					'sourceColumn' => 'access',
+					'targetTable' => '#__viewlevels',
+					'targetColumn' => 'id',
+					'displayColumn' => 'title'
+				),
+				array(
+					'sourceColumn' => 'modified_by',
+					'targetTable' => '#__users',
+					'targetColumn' => 'id',
+					'displayColumn' => 'name'
+				)
+			);
+
+			$content_history_options = new stdClass;
+			$content_history_options->formFile      = 'administrator/components/com_restaurant/models/forms/drink.xml';
+			$content_history_options->hideFields    = $hideFields;
+			$content_history_options->ignoreChanges = $ignoreChanges;
+			$content_history_options->convertToInt  = $convertToInt;
+			$content_history_options->displayLookup = $displayLookup;
+
+			$content_types['type_title']              = 'Drink';
+			$content_types['type_alias']              = 'com_restaurant.drink';
+			$content_types['table']                   = json_encode($table_object);
+			$content_types['rules']                   = '';
+			$content_types['field_mappings']          = json_encode($field_mappings);
+			$content_types['router']                  = 'RestaurantHelperRoute::getDrinkRoute';
+			$content_types['content_history_options'] = json_encode($content_history_options);
+
+			$table->save($content_types);
+		}
+
 		// Adding Category "uncategorized" if installing or discovering.
 		if ($route != 'update')
 		{

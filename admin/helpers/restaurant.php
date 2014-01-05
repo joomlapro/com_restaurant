@@ -49,5 +49,11 @@ class RestaurantHelper extends JHelperContent
 			'index.php?option=com_restaurant&view=featured',
 			$vName == 'featured'
 		);
+
+		JHtmlSidebar::addEntry(
+			JText::_('COM_RESTAURANT_SUBMENU_DRINKS'),
+			'index.php?option=com_restaurant&view=drinks',
+			$vName == 'drinks'
+		);
 	}
 }

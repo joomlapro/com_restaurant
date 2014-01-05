@@ -12,14 +12,14 @@
 defined('_JEXEC') or die;
 
 /**
- * View class for a list of dishes.
+ * View class for a list of drinks.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class RestaurantViewDishes extends JViewLegacy
+class RestaurantViewDrinks extends JViewLegacy
 {
 	/**
 	 * List of update items.
@@ -94,26 +94,11 @@ class RestaurantViewDishes extends JViewLegacy
 			return false;
 		}
 
-		// Levels filter.
-		$options   = array();
-		$options[] = JHtml::_('select.option', '1', JText::_('J1'));
-		$options[] = JHtml::_('select.option', '2', JText::_('J2'));
-		$options[] = JHtml::_('select.option', '3', JText::_('J3'));
-		$options[] = JHtml::_('select.option', '4', JText::_('J4'));
-		$options[] = JHtml::_('select.option', '5', JText::_('J5'));
-		$options[] = JHtml::_('select.option', '6', JText::_('J6'));
-		$options[] = JHtml::_('select.option', '7', JText::_('J7'));
-		$options[] = JHtml::_('select.option', '8', JText::_('J8'));
-		$options[] = JHtml::_('select.option', '9', JText::_('J9'));
-		$options[] = JHtml::_('select.option', '10', JText::_('J10'));
-
-		$this->f_levels = $options;
-
 		// We do not need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
 		{
 			// Load the submenu.
-			RestaurantHelper::addSubmenu('dishes');
+			RestaurantHelper::addSubmenu('drinks');
 
 			$this->addToolbar();
 			$this->sidebar = JHtmlSidebar::render();
@@ -133,40 +118,39 @@ class RestaurantViewDishes extends JViewLegacy
 	{
 		// Initialise variables.
 		$state = $this->get('State');
-		$canDo = DishesHelper::getActions($state->get('filter.category_id'), 0, 'com_restaurant');
+		$canDo = DrinksHelper::getActions(0, 'com_restaurant');
 		$user  = JFactory::getUser();
 
 		// Get the toolbar object instance.
 		$bar   = JToolBar::getInstance('toolbar');
 
-		JToolbarHelper::title(JText::_('COM_RESTAURANT_MANAGER_DISHES_TITLE'), 'stack dishes');
+		JToolbarHelper::title(JText::_('COM_RESTAURANT_MANAGER_DRINKS_TITLE'), 'stack drinks');
 
-		if ($canDo->get('core.create') && count($user->getAuthorisedCategories('com_restaurant', 'core.create')) > 0)
+		if ($canDo->get('core.create'))
 		{
-			JToolbarHelper::addNew('dish.add');
+			JToolbarHelper::addNew('drink.add');
 		}
 
 		if (($canDo->get('core.edit')) || ($canDo->get('core.edit.own')))
 		{
-			JToolbarHelper::editList('dish.edit');
+			JToolbarHelper::editList('drink.edit');
 		}
 
 		if ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::publish('dishes.publish', 'JTOOLBAR_PUBLISH', true);
-			JToolbarHelper::unpublish('dishes.unpublish', 'JTOOLBAR_UNPUBLISH', true);
-			JToolbarHelper::custom('dishes.featured', 'featured.png', 'featured_f2.png', 'JFEATURED', true);
-			JToolbarHelper::archiveList('dishes.archive');
-			JToolbarHelper::checkin('dishes.checkin');
+			JToolbarHelper::publish('drinks.publish', 'JTOOLBAR_PUBLISH', true);
+			JToolbarHelper::unpublish('drinks.unpublish', 'JTOOLBAR_UNPUBLISH', true);
+			JToolbarHelper::archiveList('drinks.archive');
+			JToolbarHelper::checkin('drinks.checkin');
 		}
 
 		if ($state->get('filter.state') == -2 && $canDo->get('core.delete'))
 		{
-			JToolbarHelper::deleteList('', 'dishes.delete', 'JTOOLBAR_EMPTY_TRASH');
+			JToolbarHelper::deleteList('', 'drinks.delete', 'JTOOLBAR_EMPTY_TRASH');
 		}
 		elseif ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::trash('dishes.trash');
+			JToolbarHelper::trash('drinks.trash');
 		}
 
 		// Add a batch button.
@@ -189,6 +173,6 @@ class RestaurantViewDishes extends JViewLegacy
 			JToolbarHelper::preferences('com_restaurant');
 		}
 
-		JToolBarHelper::help('dishes', $com = true);
+		JToolBarHelper::help('drinks', $com = true);
 	}
 }

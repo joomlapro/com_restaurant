@@ -23,6 +23,7 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_restaurant'))
 // Register dependent classes.
 JLoader::register('RestaurantHelper', __DIR__ . '/helpers/restaurant.php');
 JLoader::register('DishesHelper', __DIR__ . '/helpers/dishes.php');
+JLoader::register('DrinksHelper', __DIR__ . '/helpers/drinks.php');
 
 // Execute the task.
 $controller = JControllerLegacy::getInstance('Restaurant');

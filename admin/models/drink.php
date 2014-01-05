@@ -15,14 +15,14 @@ defined('_JEXEC') or die;
 JLoader::register('RestaurantHelper', JPATH_ADMINISTRATOR . '/components/com_restaurant/helpers/restaurant.php');
 
 /**
- * Item Model for an Dish.
+ * Item Model for an Drink.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class RestaurantModelDish extends JModelAdmin
+class RestaurantModelDrink extends JModelAdmin
 {
 	/**
 	 * The prefix to use with controller messages.
@@ -30,18 +30,18 @@ class RestaurantModelDish extends JModelAdmin
 	 * @var     string
 	 * @since   3.2
 	 */
-	protected $text_prefix = 'COM_RESTAURANT_DISH';
+	protected $text_prefix = 'COM_RESTAURANT_DRINK';
 
 	/**
-	 * The type alias for this content type (for example, 'com_restaurant.dish').
+	 * The type alias for this content type (for example, 'com_restaurant.drink').
 	 *
 	 * @var      string
 	 * @since    3.2
 	 */
-	public $typeAlias = 'com_restaurant.dish';
+	public $typeAlias = 'com_restaurant.drink';
 
 	/**
-	 * Batch copy items to a new category or current.
+	 * Batch copy items to current.
 	 *
 	 * @param   integer  $value     The new category.
 	 * @param   array    $pks       An array of row IDs.
@@ -53,16 +53,6 @@ class RestaurantModelDish extends JModelAdmin
 	 */
 	protected function batchCopy($value, $pks, $contexts)
 	{
-		// Initialiase variables.
-		$categoryId = (int) $value;
-		$i          = 0;
-
-		// Check that the category exists.
-		if (!parent::checkCategoryId($categoryId))
-		{
-			return false;
-		}
-
 		// Parent exists so we let's proceed.
 		while (!empty($pks))
 		{
@@ -91,18 +81,12 @@ class RestaurantModelDish extends JModelAdmin
 			}
 
 			// Alter the title & alias.
-			$data = $this->generateNewTitle($categoryId, $this->table->alias, $this->table->title);
+			$data = $this->generateNewTitle(null, $this->table->alias, $this->table->title);
 			$this->table->title = $data['0'];
 			$this->table->alias = $data['1'];
 
 			// Reset the ID because we are making a copy.
 			$this->table->id = 0;
-
-			// New category ID.
-			$this->table->catid = $categoryId;
-
-			// Get the featured state.
-			$featured = $this->table->featured;
 
 			// Check the row.
 			if (!$this->table->check())
@@ -120,24 +104,6 @@ class RestaurantModelDish extends JModelAdmin
 				$this->setError($table->getError());
 
 				return false;
-			}
-
-			// Get the new item ID.
-			$newId = $this->table->get('id');
-
-			// Add the new ID to the array.
-			$newIds[$i] = $newId;
-			$i++;
-
-			// Check if the dish was featured and update the #__restaurant_dishes_frontpage table.
-			if ($featured == 1)
-			{
-				$db = $this->getDbo();
-				$query = $db->getQuery(true)
-					->insert($db->quoteName('#__restaurant_dishes_frontpage'))
-					->values($newId . ', 0');
-				$db->setQuery($query);
-				$db->execute();
 			}
 		}
 
@@ -168,7 +134,7 @@ class RestaurantModelDish extends JModelAdmin
 			// Get the current user object.
 			$user = JFactory::getUser();
 
-			return $user->authorise('core.delete', 'com_restaurant.dish.' . (int) $record->id);
+			return $user->authorise('core.delete', 'com_restaurant.drink.' . (int) $record->id);
 		}
 	}
 
@@ -186,17 +152,12 @@ class RestaurantModelDish extends JModelAdmin
 		// Get the current user object.
 		$user = JFactory::getUser();
 
-		// Check for existing dish.
+		// Check for existing drink.
 		if (!empty($record->id))
 		{
-			return $user->authorise('core.edit.state', 'com_restaurant.dish.' . (int) $record->id);
+			return $user->authorise('core.edit.state', 'com_restaurant.drink.' . (int) $record->id);
 		}
-		// New dish, so check against the category.
-		elseif (!empty($record->catid))
-		{
-			return $user->authorise('core.edit.state', 'com_restaurant.category.' . (int) $record->catid);
-		}
-		// Default to component settings if neither dish nor category known.
+		// Default to component settings if neither drink.
 		else
 		{
 			return parent::canEditState('com_restaurant');
@@ -227,13 +188,13 @@ class RestaurantModelDish extends JModelAdmin
 			$table->publish_down = $db->getNullDate();
 		}
 
-		// Increment the dishes version number.
+		// Increment the drinks version number.
 		$table->version++;
 
-		// Reorder the dishes within the category so the new dish is first.
+		// Reorder the drinks so the new drink is first.
 		if (empty($table->id))
 		{
-			$table->reorder('catid = ' . (int) $table->catid . ' AND state >= 0');
+			$table->reorder('state >= 0');
 		}
 
 		$table->price = floatval(str_replace(',', '.', str_replace('.', '', $table->price)));
@@ -250,7 +211,7 @@ class RestaurantModelDish extends JModelAdmin
 	 *
 	 * @since   3.2
 	 */
-	public function getTable($type = 'Dish', $prefix = 'RestaurantTable', $config = array())
+	public function getTable($type = 'Drink', $prefix = 'RestaurantTable', $config = array())
 	{
 		return JTable::getInstance($type, $prefix, $config);
 	}
@@ -273,21 +234,16 @@ class RestaurantModelDish extends JModelAdmin
 			$registry->loadString($item->metadata);
 			$item->metadata = $registry->toArray();
 
-			// Convert the images field to an array.
-			$registry = new JRegistry;
-			$registry->loadString($item->images);
-			$item->images = $registry->toArray();
-
 			if (!empty($item->id))
 			{
 				$item->tags = new JHelperTags;
-				$item->tags->getTagIds($item->id, 'com_restaurant.dish');
+				$item->tags->getTagIds($item->id, 'com_restaurant.drink');
 			}
 
 			$item->price = number_format($item->price, 2, ',', '.');
 		}
 
-		// Load associated dishes items.
+		// Load associated drinks items.
 		$app = JFactory::getApplication();
 		$assoc = JLanguageAssociations::isEnabled();
 
@@ -297,7 +253,7 @@ class RestaurantModelDish extends JModelAdmin
 
 			if ($item->id != null)
 			{
-				$associations = JLanguageAssociations::getAssociations('com_restaurant', '#__restaurant_dishes', 'com_restaurant.item', $item->id);
+				$associations = JLanguageAssociations::getAssociations('com_restaurant', '#__restaurant_drinks', 'com_restaurant.item', $item->id);
 
 				foreach ($associations as $tag => $association)
 				{
@@ -322,7 +278,7 @@ class RestaurantModelDish extends JModelAdmin
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.
-		$form = $this->loadForm('com_restaurant.dish', 'dish', array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm('com_restaurant.drink', 'drink', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))
 		{
@@ -343,28 +299,17 @@ class RestaurantModelDish extends JModelAdmin
 		}
 
 		// Determine correct permissions to check.
-		if ($this->getState('dish.id'))
+		if ($this->getState('drink.id'))
 		{
-			$id = $this->getState('dish.id');
-
-			// Existing record. Can only edit in selected categories.
-			$form->setFieldAttribute('catid', 'action', 'core.edit');
-
-			// Existing record. Can only edit own dishes in selected categories.
-			$form->setFieldAttribute('catid', 'action', 'core.edit.own');
-		}
-		else
-		{
-			// New record. Can only create in selected categories.
-			$form->setFieldAttribute('catid', 'action', 'core.create');
+			$id = $this->getState('drink.id');
 		}
 
 		// Get the current user object.
 		$user = JFactory::getUser();
 
-		// Check for existing dish.
+		// Check for existing drink.
 		// Modify the form based on Edit State access controls.
-		if ($id != 0 && (!$user->authorise('core.edit.state', 'com_restaurant.dish.' . (int) $id))
+		if ($id != 0 && (!$user->authorise('core.edit.state', 'com_restaurant.drink.' . (int) $id))
 			|| ($id == 0 && !$user->authorise('core.edit.state', 'com_restaurant')))
 		{
 			// Disable fields for display.
@@ -372,27 +317,23 @@ class RestaurantModelDish extends JModelAdmin
 			$form->setFieldAttribute('ordering', 'disabled', 'true');
 			$form->setFieldAttribute('publish_up', 'disabled', 'true');
 			$form->setFieldAttribute('publish_down', 'disabled', 'true');
-			$form->setFieldAttribute('featured', 'disabled', 'true');
 
 			// Disable fields while saving.
-			// The controller has already verified this is an dish you can edit.
+			// The controller has already verified this is an drink you can edit.
 			$form->setFieldAttribute('state', 'filter', 'unset');
 			$form->setFieldAttribute('ordering', 'filter', 'unset');
 			$form->setFieldAttribute('publish_up', 'filter', 'unset');
 			$form->setFieldAttribute('publish_down', 'filter', 'unset');
-			$form->setFieldAttribute('featured', 'filter', 'unset');
 		}
 
-		// Prevent messing with dish language and category when editing existing dish with associations.
+		// Prevent messing with drink language.
 		$app = JFactory::getApplication();
 		$assoc = JLanguageAssociations::isEnabled();
 
-		if ($app->isSite() && $assoc && $this->getState('dish.id'))
+		if ($app->isSite() && $assoc && $this->getState('drink.id'))
 		{
 			$form->setFieldAttribute('language', 'readonly', 'true');
-			$form->setFieldAttribute('catid', 'readonly', 'true');
 			$form->setFieldAttribute('language', 'filter', 'unset');
-			$form->setFieldAttribute('catid', 'filter', 'unset');
 		}
 
 		return $form;
@@ -409,20 +350,14 @@ class RestaurantModelDish extends JModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$app  = JFactory::getApplication();
-		$data = $app->getUserState('com_restaurant.edit.dish.data', array());
+		$data = $app->getUserState('com_restaurant.edit.drink.data', array());
 
 		if (empty($data))
 		{
 			$data = $this->getItem();
-
-			// Prime some default values.
-			if ($this->getState('dish.id') == 0)
-			{
-				$data->set('catid', $app->input->getInt('catid', $app->getUserState('com_restaurant.dishes.filter.category_id')));
-			}
 		}
 
-		$this->preprocessData('com_restaurant.dish', $data);
+		$this->preprocessData('com_restaurant.drink', $data);
 
 		return $data;
 	}
@@ -441,17 +376,10 @@ class RestaurantModelDish extends JModelAdmin
 		// Get the application.
 		$app = JFactory::getApplication();
 
-		if (isset($data['images']) && is_array($data['images']))
-		{
-			$registry = new JRegistry;
-			$registry->loadArray($data['images']);
-			$data['images'] = (string) $registry;
-		}
-
 		// Alter the title for save as copy.
 		if ($app->input->get('task') == 'save2copy')
 		{
-			list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
+			list($title, $alias) = $this->generateNewTitle(null, $data['alias'], $data['title']);
 
 			$data['title'] = $title;
 			$data['alias'] = $alias;
@@ -460,11 +388,6 @@ class RestaurantModelDish extends JModelAdmin
 
 		if (parent::save($data))
 		{
-			if (isset($data['featured']))
-			{
-				$this->featured($this->getState($this->getName() . '.id'), $data['featured']);
-			}
-
 			$assoc = JLanguageAssociations::isEnabled();
 
 			if ($assoc)
@@ -483,7 +406,7 @@ class RestaurantModelDish extends JModelAdmin
 					}
 				}
 
-				// Detecting all item dishes.
+				// Detecting all item menus.
 				$all_language = $item->language == '*';
 
 				if ($all_language && !empty($associations))
@@ -540,116 +463,6 @@ class RestaurantModelDish extends JModelAdmin
 	}
 
 	/**
-	 * Method to toggle the featured setting of dishes.
-	 *
-	 * @param   array    $pks    The ids of the items to toggle.
-	 * @param   integer  $value  The value to toggle to.
-	 *
-	 * @return  boolean  True on success.
-	 *
-	 * @since   3.2
-	 */
-	public function featured($pks, $value = 0)
-	{
-		// Sanitize the ids.
-		$pks = (array) $pks;
-
-		JArrayHelper::toInteger($pks);
-
-		if (empty($pks))
-		{
-			$this->setError(JText::_('COM_RESTAURANT_NO_ITEM_SELECTED'));
-
-			return false;
-		}
-
-		$table = $this->getTable('Featured', 'RestaurantTable');
-
-		try
-		{
-			// Initialiase variables.
-			$db = $this->getDbo();
-
-			// Create the base update statement.
-			$query = $db->getQuery(true)
-				->update($db->quoteName('#__restaurant_dishes'))
-				->set('featured = ' . (int) $value)
-				->where('id IN (' . implode(',', $pks) . ')');
-
-			// Set the query and execute the update.
-			$db->setQuery($query);
-			$db->execute();
-
-			if ((int) $value == 0)
-			{
-				// Adjust the mapping table.
-				// Clear the existing features settings.
-				$query = $db->getQuery(true)
-					->delete($db->quoteName('#__restaurant_dishes_frontpage'))
-					->where('dish_id IN (' . implode(',', $pks) . ')');
-
-				// Set the query and execute the update.
-				$db->setQuery($query);
-				$db->execute();
-			}
-			else
-			{
-				// First, we find out which of our new featured dishes are already featured.
-				$query = $db->getQuery(true)
-					->select('f.dish_id')
-					->from('#__restaurant_dishes_frontpage AS f')
-					->where('dish_id IN (' . implode(',', $pks) . ')');
-
-				// Set the query and execute the update.
-				$db->setQuery($query);
-
-				$old_featured = $db->loadColumn();
-
-				// We diff the arrays to get a list of the dishes that are newly featured.
-				$new_featured = array_diff($pks, $old_featured);
-
-				// Featuring.
-				$tuples = array();
-
-				foreach ($new_featured as $pk)
-				{
-					$tuples[] = $pk . ', 0';
-				}
-
-				if (count($tuples))
-				{
-					// Initialiase variables.
-					$db = $this->getDbo();
-					$columns = array('dish_id', 'ordering');
-
-					// Create the base insert statement.
-					$query = $db->getQuery(true)
-						->insert($db->quoteName('#__restaurant_dishes_frontpage'))
-						->columns($db->quoteName($columns))
-						->values($tuples);
-
-					// Set the query and execute the insert.
-					$db->setQuery($query);
-					$db->execute();
-				}
-			}
-		}
-		catch (Exception $e)
-		{
-			$this->setError($e->getMessage());
-
-			return false;
-		}
-
-		$table->reorder();
-
-		// Clear the cache.
-		$this->cleanCache();
-
-		return true;
-	}
-
-	/**
 	 * A protected method to get a set of ordering conditions.
 	 *
 	 * @param   object  $table  A record object.
@@ -661,7 +474,6 @@ class RestaurantModelDish extends JModelAdmin
 	protected function getReorderConditions($table)
 	{
 		$condition = array();
-		$condition[] = 'catid = ' . (int) $table->catid;
 
 		return $condition;
 	}
@@ -681,7 +493,7 @@ class RestaurantModelDish extends JModelAdmin
 	 */
 	protected function preprocessForm(JForm $form, $data, $group = 'content')
 	{
-		// Association dishes items.
+		// Association drinks items.
 		$app   = JFactory::getApplication();
 		$assoc = JLanguageAssociations::isEnabled();
 
@@ -723,107 +535,5 @@ class RestaurantModelDish extends JModelAdmin
 		}
 
 		parent::preprocessForm($form, $data, $group);
-	}
-
-	/**
-	 * Method to set a dish as potluck.
-	 *
-	 * @param   integer  $id  The primary key ID for the dish.
-	 *
-	 * @return  boolean  True if successful.
-	 *
-	 * @throws  RuntimeException
-	 * @since   3.2
-	 */
-	public function setPotluck($id = 0)
-	{
-		// Initialiase variables.
-		$user = JFactory::getUser();
-		$db   = $this->getDbo();
-
-		// Access checks.
-		if (!$user->authorise('core.edit.state', 'com_restaurant'))
-		{
-			throw new RuntimeException(JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
-		}
-
-		$dish = JTable::getInstance('Dish', 'RestaurantTable');
-
-		if (!$dish->load((int) $id))
-		{
-			throw new RuntimeException(JText::_('COM_RESTAURANT_ERROR_DISH_NOT_FOUND'));
-		}
-
-		// Detect disabled row.
-		if ($dish->state == 0 || $dish->state == -2)
-		{
-			throw new RuntimeException(JText::_('COM_RESTAURANT_ERROR_SAVE_DISABLED_DISH'));
-		}
-
-		// Detect archived row.
-		if ($dish->state == 2)
-		{
-			throw new RuntimeException(JText::_('COM_RESTAURANT_ERROR_SAVE_ARCHIVED_DISH'));
-		}
-
-		// Reset the potluck fields.
-		$db->setQuery(
-			'UPDATE #__restaurant_dishes'
-			. ' SET `potluck` = \'0\''
-			. ' WHERE `potluck` = \'1\''
-		);
-
-		$db->execute();
-
-		// Set the new potluck dish.
-		$db->setQuery(
-			'UPDATE #__restaurant_dishes'
-			. ' SET `potluck` = \'1\''
-			. ' WHERE id = ' . (int) $id
-		);
-
-		$db->execute();
-
-		// Clean the cache.
-		$this->cleanCache();
-
-		return true;
-	}
-
-	/**
-	 * Method to unset a dish as potluck.
-	 *
-	 * @param   integer  $id  The primary key ID for the dish.
-	 *
-	 * @return  boolean  True if successful.
-	 *
-	 * @throws	Exception
-	 * @since   3.2
-	 */
-	public function unsetPotluck($id = 0)
-	{
-		// Initialiase variables.
-		$user = JFactory::getUser();
-		$db   = $this->getDbo();
-
-		// Access checks.
-		if (!$user->authorise('core.edit.state', 'com_restaurant'))
-		{
-			throw new Exception(JText::_('JLIB_APPLICATION_ERROR_EDITSTATE_NOT_PERMITTED'));
-		}
-
-		// Set the new potluck dish.
-		$db->setQuery(
-			'UPDATE #__restaurant_dishes' .
-			' SET potluck = \'0\'' .
-			' WHERE id = ' . (int) $id
-		);
-
-		$db->execute();
-
-		// Clean the cache.
-		$this->cleanCache();
-
-		return true;
 	}
 }

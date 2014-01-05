@@ -12,14 +12,14 @@
 defined('_JEXEC') or die;
 
 /**
- * Methods supporting a list of dish records.
+ * Methods supporting a list of drink records.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class RestaurantModelDishes extends JModelList
+class RestaurantModelDrinks extends JModelList
 {
 	/**
 	 * Constructor.
@@ -40,21 +40,17 @@ class RestaurantModelDishes extends JModelList
 				'price', 'a.price',
 				'checked_out', 'a.checked_out',
 				'checked_out_time', 'a.checked_out_time',
-				'catid', 'a.catid', 'category_title',
 				'state', 'a.state',
 				'access', 'a.access', 'access_level',
 				'created', 'a.created',
 				'created_by', 'a.created_by',
 				'created_by_alias', 'a.created_by_alias',
 				'ordering', 'a.ordering',
-				'featured', 'a.featured',
 				'language', 'a.language',
 				'hits', 'a.hits',
 				'publish_up', 'a.publish_up',
 				'publish_down', 'a.publish_down',
 				'author_id',
-				'category_id',
-				'level',
 				'tag'
 			);
 
@@ -103,12 +99,6 @@ class RestaurantModelDishes extends JModelList
 		$published = $this->getUserStateFromRequest($this->context . '.filter.state', 'filter_state', '');
 		$this->setState('filter.state', $published);
 
-		$categoryId = $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id');
-		$this->setState('filter.category_id', $categoryId);
-
-		$level = $this->getUserStateFromRequest($this->context . '.filter.level', 'filter_level', 0, 'int');
-		$this->setState('filter.level', $level);
-
 		$language = $this->getUserStateFromRequest($this->context . '.filter.language', 'filter_language', '');
 		$this->setState('filter.language', $language);
 
@@ -148,7 +138,6 @@ class RestaurantModelDishes extends JModelList
 		$id .= ':' . $this->getState('filter.access');
 		$id .= ':' . $this->getState('filter.author_id');
 		$id .= ':' . $this->getState('filter.state');
-		$id .= ':' . $this->getState('filter.category_id');
 		$id .= ':' . $this->getState('filter.language');
 
 		return parent::getStoreId($id);
@@ -172,12 +161,12 @@ class RestaurantModelDishes extends JModelList
 		$query->select(
 			$this->getState(
 				'list.select',
-				'a.id, a.catid, a.title, a.alias, a.price, a.potluck, a.checked_out, a.checked_out_time' .
-					', a.state, a.ordering, a.access, a.language, a.created, a.created_by, a.created_by_alias, a.featured, a.hits' .
+				'a.id, a.title, a.alias, a.price, a.checked_out, a.checked_out_time' .
+					', a.state, a.ordering, a.access, a.language, a.created, a.created_by, a.created_by_alias, a.hits' .
 					', a.publish_up, a.publish_down'
 			)
 		);
-		$query->from($db->quoteName('#__restaurant_dishes') . ' AS a');
+		$query->from($db->quoteName('#__restaurant_drinks') . ' AS a');
 
 		// Join over the language.
 		$query->select('l.title AS language_title')
@@ -190,10 +179,6 @@ class RestaurantModelDishes extends JModelList
 		// Join over the asset groups.
 		$query->select('ag.title AS access_level')
 			->join('LEFT', '#__viewlevels AS ag ON ag.id = a.access');
-
-		// Join over the categories.
-		$query->select('c.title AS category_title')
-			->join('LEFT', '#__categories AS c ON c.id = a.catid');
 
 		// Join over the users for the author.
 		$query->select('ua.name AS author_name')
@@ -231,37 +216,6 @@ class RestaurantModelDishes extends JModelList
 		elseif ($published === '')
 		{
 			$query->where('(a.state = 0 OR a.state = 1)');
-		}
-
-		// Filter by a single or group of categories.
-		$baselevel  = 1;
-		$categoryId = $this->getState('filter.category_id');
-
-		if (is_numeric($categoryId))
-		{
-			$cat_tbl   = JTable::getInstance('Category', 'JTable');
-			$cat_tbl->load($categoryId);
-
-			$rgt       = $cat_tbl->rgt;
-			$lft       = $cat_tbl->lft;
-			$baselevel = (int) $cat_tbl->level;
-
-			$query->where('c.lft >= ' . (int) $lft)
-				->where('c.rgt <= ' . (int) $rgt);
-		}
-		elseif (is_array($categoryId))
-		{
-			JArrayHelper::toInteger($categoryId);
-
-			$categoryId = implode(',', $categoryId);
-
-			$query->where('a.catid IN (' . $categoryId . ')');
-		}
-
-		// Filter on the level.
-		if ($level = $this->getState('filter.level'))
-		{
-			$query->where('c.level <= ' . ((int) $level + (int) $baselevel - 1));
 		}
 
 		// Filter by author.
@@ -309,18 +263,13 @@ class RestaurantModelDishes extends JModelList
 				->join(
 					'LEFT', $db->quoteName('#__contentitem_tag_map', 'tagmap')
 					. ' ON ' . $db->quoteName('tagmap.content_item_id') . ' = ' . $db->quoteName('a.id')
-					. ' AND ' . $db->quoteName('tagmap.type_alias') . ' = ' . $db->quote('com_restaurant.dish')
+					. ' AND ' . $db->quoteName('tagmap.type_alias') . ' = ' . $db->quote('com_restaurant.drink')
 				);
 		}
 
 		// Add the list ordering clause.
 		$orderCol  = $this->state->get('list.ordering', 'a.title');
 		$orderDirn = $this->state->get('list.direction', 'asc');
-
-		if ($orderCol == 'a.ordering' || $orderCol == 'category_title')
-		{
-			$orderCol = 'c.title ' . $orderDirn . ', a.ordering';
-		}
 
 		if ($orderCol == 'language')
 		{
@@ -353,7 +302,7 @@ class RestaurantModelDishes extends JModelList
 		// Construct the query.
 		$query->select('u.id AS value, u.name AS text')
 			->from($db->quoteName('#__users') . ' AS u')
-			->join('INNER', $db->quoteName('#__restaurant_dishes') . ' AS c ON c.created_by = u.id')
+			->join('INNER', $db->quoteName('#__restaurant_drinks') . ' AS c ON c.created_by = u.id')
 			->group($db->quoteName(array('u.id', 'u.name')))
 			->order($db->quoteName('u.name'));
 
@@ -365,7 +314,7 @@ class RestaurantModelDishes extends JModelList
 	}
 
 	/**
-	 * Method to get a list of dishes.
+	 * Method to get a list of drinks.
 	 * Overridden to add a check for access levels.
 	 *
 	 * @return  mixed  An array of data items on success, false on failure.
@@ -384,7 +333,7 @@ class RestaurantModelDishes extends JModelList
 
 			for ($x = 0, $count = count($items); $x < $count; $x++)
 			{
-				// Check the access level. Remove dishes the user should not see.
+				// Check the access level. Remove drinks the user should not see.
 				if (!in_array($items[$x]->access, $groups))
 				{
 					unset($items[$x]);
