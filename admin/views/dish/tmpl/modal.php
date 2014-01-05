@@ -113,20 +113,6 @@ if (isset($this->item->params['show_images_backend']) && $this->item->params['sh
 					<?php echo JHtml::_('bootstrap.endTab'); ?>
 				<?php endif; ?>
 
-				<?php // Do not show the images and links options if the edit form is configured not to. ?>
-				<?php if ($params->show_images_backend == 1): ?>
-					<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'images', JText::_('COM_RESTAURANT_FIELDSET_IMAGES', true)); ?>
-						<div class="row-fluid form-horizontal-desktop">
-							<div class="span6">
-								<?php echo $this->form->getControlGroup('images'); ?>
-								<?php foreach ($this->form->getGroup('images') as $field): ?>
-									<?php echo $field->getControlGroup(); ?>
-								<?php endforeach; ?>
-							</div>
-						</div>
-					<?php echo JHtml::_('bootstrap.endTab'); ?>
-				<?php endif; ?>
-
 				<?php if (JLanguageAssociations::isEnabled()): ?>
 					<div class="hidden">
 						<?php echo JLayoutHelper::render('joomla.edit.associations', $this); ?>

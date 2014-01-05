@@ -273,11 +273,6 @@ class RestaurantModelDish extends JModelAdmin
 			$registry->loadString($item->metadata);
 			$item->metadata = $registry->toArray();
 
-			// Convert the images field to an array.
-			$registry = new JRegistry;
-			$registry->loadString($item->images);
-			$item->images = $registry->toArray();
-
 			if (!empty($item->id))
 			{
 				$item->tags = new JHelperTags;
@@ -441,13 +436,6 @@ class RestaurantModelDish extends JModelAdmin
 		// Get the application.
 		$app = JFactory::getApplication();
 
-		if (isset($data['images']) && is_array($data['images']))
-		{
-			$registry = new JRegistry;
-			$registry->loadArray($data['images']);
-			$data['images'] = (string) $registry;
-		}
-
 		// Alter the title for save as copy.
 		if ($app->input->get('task') == 'save2copy')
 		{
@@ -456,6 +444,58 @@ class RestaurantModelDish extends JModelAdmin
 			$data['title'] = $title;
 			$data['alias'] = $alias;
 			$data['state'] = 0;
+		}
+
+		jimport('joomla.filesystem.file');
+		jimport('joomla.filesystem.folder');
+
+		// Get some data from the request.
+		$file = $app->input->files->get('jform', '', 'array');
+
+		if ($file['image']['size'])
+		{
+			$filepath = JPath::clean(COM_RESTAURANT_BASE . '/dishes/');
+
+			if (!JFolder::exists($filepath))
+			{
+				JFolder::create($filepath);
+			}
+
+			if (!JFolder::exists($filepath . '/thumbnails/'))
+			{
+				JFolder::create($filepath . '/thumbnails/');
+			}
+
+			if (JFile::exists($filepath . $data['image_old']))
+			{
+				JFile::delete($filepath . $data['image_old']);
+				JFile::delete($filepath . '/thumbnails/' . $data['image_old']);
+			}
+
+			$extension = JFile::getExt($file['image']['name']);
+
+			$data['image'] = uniqid() . '.' . $extension;
+			$file['image']['name'] = $data['image'];
+
+			$object_file = new JObject($file['image']);
+			$object_file->filepath = $filepath . strtolower($file['image']['name']);
+
+			JFile::upload($object_file->tmp_name, $object_file->filepath);
+
+			$JImage = new JImage($object_file->filepath);
+
+			try
+			{
+				$image = $JImage->cropResize('700', '300', false);
+				$image->toFile($object_file->filepath);
+
+				$thumbnail = $JImage->cropResize('100', '100', false);
+				$thumbnail->toFile($filepath . '/thumbnails/' . strtolower($file['image']['name']));
+			}
+			catch (Exception $e)
+			{
+				$app->enqueueMessage($e->getMessage(), 'error');
+			}
 		}
 
 		if (parent::save($data))

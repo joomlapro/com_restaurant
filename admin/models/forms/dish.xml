@@ -33,6 +33,17 @@
 			hint="JFIELD_ALIAS_PLACEHOLDER"
 			size="40" />
 		<field
+			name="image"
+			type="file"
+			class="inputbox"
+			label="COM_RESTAURANT_FIELD_IMAGE_LABEL"
+			description="COM_RESTAURANT_FIELD_IMAGE_DESC"
+			accept="image/*"
+			size="40" />
+		<field
+			name="image_old"
+			type="hidden" />
+		<field
 			name="price"
 			type="text"
 			class="inputbox price"
@@ -654,72 +665,6 @@
 		label="JFIELD_KEY_REFERENCE_LABEL"
 		description="JFIELD_KEY_REFERENCE_DESC"
 		size="20" />
-	<fields
-		name="images"
-		label="COM_RESTAURANT_FIELD_IMAGE_OPTIONS">
-		<field
-			name="image_intro"
-			type="media"
-			label="COM_RESTAURANT_FIELD_INTRO_LABEL"
-			description="COM_RESTAURANT_FIELD_INTRO_DESC" />
-		<field
-			name="float_intro"
-			type="list"
-			label="COM_RESTAURANT_FIELD_FLOAT_LABEL"
-			description="COM_RESTAURANT_FIELD_FLOAT_DESC">
-			<option value="">JGLOBAL_USE_GLOBAL</option>
-			<option value="right">COM_RESTAURANT_FIELD_OPTION_RIGHT</option>
-			<option value="left">COM_RESTAURANT_FIELD_OPTION_LEFT</option>
-			<option value="none">COM_RESTAURANT_FIELD_OPTION_NONE</option>
-		</field>
-		<field
-			name="image_intro_alt"
-			type="text"
-			class="inputbox"
-			label="COM_RESTAURANT_FIELD_IMAGE_ALT_LABEL"
-			description="COM_RESTAURANT_FIELD_IMAGE_ALT_DESC"
-			size="20" />
-		<field
-			name="image_intro_caption"
-			type="text"
-			class="inputbox"
-			label="COM_RESTAURANT_FIELD_IMAGE_CAPTION_LABEL"
-			description="COM_RESTAURANT_FIELD_IMAGE_CAPTION_DESC"
-			size="20" />
-		<field
-			name="spacer1"
-			type="spacer"
-			hr="true" />
-		<field
-			name="image_fulltext"
-			type="media"
-			label="COM_RESTAURANT_FIELD_FULL_LABEL"
-			description="COM_RESTAURANT_FIELD_FULL_DESC" />
-		<field
-			name="float_fulltext"
-			type="list"
-			label="COM_RESTAURANT_FIELD_FLOAT_LABEL"
-			description="COM_RESTAURANT_FIELD_FLOAT_DESC">
-			<option value="">JGLOBAL_USE_GLOBAL</option>
-			<option value="right">COM_RESTAURANT_FIELD_OPTION_RIGHT</option>
-			<option value="left">COM_RESTAURANT_FIELD_OPTION_LEFT</option>
-			<option value="none">COM_RESTAURANT_FIELD_OPTION_NONE</option>
-		</field>
-		<field
-			name="image_fulltext_alt"
-			type="text"
-			class="inputbox"
-			label="COM_RESTAURANT_FIELD_IMAGE_ALT_LABEL"
-			description="COM_RESTAURANT_FIELD_IMAGE_ALT_DESC"
-			size="20" />
-		<field
-			name="image_fulltext_caption"
-			type="text"
-			class="inputbox"
-			label="COM_RESTAURANT_FIELD_IMAGE_CAPTION_LABEL"
-			description="COM_RESTAURANT_FIELD_IMAGE_CAPTION_DESC"
-			size="20" />
-	</fields>
 	<fields
 		name="metadata"
 		label="JGLOBAL_FIELDSET_METADATA_OPTIONS">

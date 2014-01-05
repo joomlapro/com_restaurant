@@ -25,6 +25,12 @@ JLoader::register('RestaurantHelper', __DIR__ . '/helpers/restaurant.php');
 JLoader::register('DishesHelper', __DIR__ . '/helpers/dishes.php');
 JLoader::register('DrinksHelper', __DIR__ . '/helpers/drinks.php');
 
+// Load the parameters.
+$params = JComponentHelper::getParams('com_restaurant');
+
+define('COM_RESTAURANT_BASE',    JPATH_ROOT . '/' . $params->get('image_path', 'images'));
+define('COM_RESTAURANT_BASEURL', JUri::root() . $params->get('image_path', 'images'));
+
 // Execute the task.
 $controller = JControllerLegacy::getInstance('Restaurant');
 $controller->execute(JFactory::getApplication()->input->get('task'));

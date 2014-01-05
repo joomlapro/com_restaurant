@@ -1,35 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
 	<fieldset
-		name="price"
-		label="COM_RESTAURANT_FIELDSET_PRICE_LABEL"
-		description="COM_RESTAURANT_FIELDSET_PRICE_DESC">
-		<field
-			name="prefix"
-			type="text"
-			class="inputbox"
-			label="COM_RESTAURANT_FIELD_PREFIX_LABEL"
-			description="COM_RESTAURANT_FIELD_PREFIX_DESC"
-			default="$ "
-			size="40" />
-		<field
-			name="thousands"
-			type="text"
-			class="inputbox"
-			label="COM_RESTAURANT_FIELD_THOUSANDS_LABEL"
-			description="COM_RESTAURANT_FIELD_THOUSANDS_DESC"
-			default=","
-			size="40" />
-		<field
-			name="decimal"
-			type="text"
-			class="inputbox"
-			label="COM_RESTAURANT_FIELD_DECIMAL_LABEL"
-			description="COM_RESTAURANT_FIELD_DECIMAL_DESC"
-			default="."
-			size="40" />
-	</fieldset>
-	<fieldset
 		name="dishes"
 		label="COM_RESTAURANT_CONFIG_DISHES_SETTINGS_LABEL"
 		description="COM_RESTAURANT_CONFIG_DISHES_SETTINGS_DESC">
@@ -286,6 +257,35 @@
 			<option value="1">JYES</option>
 			<option value="0">JNO</option>
 		</field>
+	</fieldset>
+	<fieldset
+		name="price"
+		label="COM_RESTAURANT_FIELDSET_PRICE_LABEL"
+		description="COM_RESTAURANT_FIELDSET_PRICE_DESC">
+		<field
+			name="prefix"
+			type="text"
+			class="inputbox"
+			label="COM_RESTAURANT_FIELD_PREFIX_LABEL"
+			description="COM_RESTAURANT_FIELD_PREFIX_DESC"
+			default="$ "
+			size="40" />
+		<field
+			name="thousands"
+			type="text"
+			class="inputbox"
+			label="COM_RESTAURANT_FIELD_THOUSANDS_LABEL"
+			description="COM_RESTAURANT_FIELD_THOUSANDS_DESC"
+			default=","
+			size="40" />
+		<field
+			name="decimal"
+			type="text"
+			class="inputbox"
+			label="COM_RESTAURANT_FIELD_DECIMAL_LABEL"
+			description="COM_RESTAURANT_FIELD_DECIMAL_DESC"
+			default="."
+			size="40" />
 	</fieldset>
 	<fieldset
 		name="editinglayout"

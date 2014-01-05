@@ -1,2 +1,0 @@
-jheader
-jsiteviewcategory_feed

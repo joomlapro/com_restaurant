@@ -35,6 +35,7 @@ if (!isset($params->show_publishing_options))
 {
 	$params->show_publishing_options = '1';
 	$params->show_drink_options = '1';
+	$params->show_images_frontend = '0';
 }
 
 // Check if the drink uses configuration settings besides global. If so, use them.
@@ -46,6 +47,11 @@ if (isset($this->item->params['show_publishing_options']) && $this->item->params
 if (isset($this->item->params['show_drink_options']) && $this->item->params['show_drink_options'] != '')
 {
 	$params->show_drink_options = $this->item->params['show_drink_options'];
+}
+
+if (isset($this->item->params['show_images_backend']) && $this->item->params['show_images_backend'] != '')
+{
+	$params->show_images_backend = $this->item->params['show_images_backend'];
 }
 
 // Add JavaScript Frameworks.
@@ -71,7 +77,7 @@ JHtml::script('com_restaurant/jquery.maskMoney.min.js', false, true);
 		});
 	});
 </script>
-<form action="<?php echo JRoute::_('index.php?option=com_restaurant&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="item-form" class="form-validate">
+<form action="<?php echo JRoute::_('index.php?option=com_restaurant&layout=edit&id=' . (int) $this->item->id); ?>" method="post" name="adminForm" id="item-form" class="form-validate" enctype="multipart/form-data">
 	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
 	<div class="form-horizontal">
 		<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'general')); ?>
@@ -88,6 +94,21 @@ JHtml::script('com_restaurant/jquery.maskMoney.min.js', false, true);
 					</div>
 				</div>
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+			<?php if ($params->show_images_backend == 1): ?>
+				<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'image', JText::_('COM_RESTAURANT_FIELDSET_IMAGE', true)); ?>
+					<div class="row-fluid">
+						<div class="span12">
+							<?php echo $this->form->getControlGroup('image'); ?>
+						</div>
+					</div>
+					<?php if ($image = $this->item->image): ?>
+						<figure>
+							<?php echo JHtml::_('image', COM_RESTAURANT_BASEURL . '/dishes/' . $image, $this->item->title, null, true); ?>
+						</figure>
+					<?php endif ?>
+				<?php echo JHtml::_('bootstrap.endTab'); ?>
+			<?php endif; ?>
 
 			<?php // Do not show the publishing options if the edit form is configured not to. ?>
 			<?php if ($params->show_publishing_options == 1): ?>
@@ -135,6 +156,7 @@ JHtml::script('com_restaurant/jquery.maskMoney.min.js', false, true);
 		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 		<div>
 			<input type="hidden" name="task" value="" />
+			<input type="hidden" name="jform[image_old]" value="<?php echo $this->item->image; ?>">
 			<input type="hidden" name="return" value="<?php echo JFactory::getApplication()->input->getBase64('return'); ?>" />
 			<?php echo JHtml::_('form.token'); ?>
 		</div>

@@ -89,7 +89,7 @@ class Com_RestaurantInstallerScript
 			$common->core_featured        = 'featured';
 			$common->core_metadata        = 'metadata';
 			$common->core_language        = 'language';
-			$common->core_images          = 'images';
+			$common->core_images          = null;
 			$common->core_urls            = null;
 			$common->core_version         = 'version';
 			$common->core_ordering        = 'ordering';

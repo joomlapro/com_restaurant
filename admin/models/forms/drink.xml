@@ -31,6 +31,17 @@
 			hint="JFIELD_ALIAS_PLACEHOLDER"
 			size="40" />
 		<field
+			name="image"
+			type="file"
+			class="inputbox"
+			label="COM_RESTAURANT_FIELD_IMAGE_LABEL"
+			description="COM_RESTAURANT_FIELD_IMAGE_DESC"
+			accept="image/*"
+			size="40" />
+		<field
+			name="image_old"
+			type="hidden" />
+		<field
 			name="price"
 			type="text"
 			class="inputbox price"
