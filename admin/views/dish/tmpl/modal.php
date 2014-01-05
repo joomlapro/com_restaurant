@@ -34,20 +34,20 @@ $params = json_decode($params);
 if (!isset($params->show_publishing_options))
 {
 	$params->show_publishing_options = '1';
-	$params->show_menu_options = '1';
+	$params->show_dish_options = '1';
 	$params->show_images_backend = '0';
 	$params->show_images_frontend = '0';
 }
 
-// Check if the menu uses configuration settings besides global. If so, use them.
+// Check if the dish uses configuration settings besides global. If so, use them.
 if (isset($this->item->params['show_publishing_options']) && $this->item->params['show_publishing_options'] != '')
 {
 	$params->show_publishing_options = $this->item->params['show_publishing_options'];
 }
 
-if (isset($this->item->params['show_menu_options']) && $this->item->params['show_menu_options'] != '')
+if (isset($this->item->params['show_dish_options']) && $this->item->params['show_dish_options'] != '')
 {
-	$params->show_menu_options = $this->item->params['show_menu_options'];
+	$params->show_dish_options = $this->item->params['show_dish_options'];
 }
 
 if (isset($this->item->params['show_images_frontend']) && $this->item->params['show_images_frontend'] != '')
@@ -62,10 +62,10 @@ if (isset($this->item->params['show_images_backend']) && $this->item->params['sh
 ?>
 <script type="text/javascript">
 	Joomla.submitbutton = function(task) {
-		if (task == 'menu.cancel' || document.formvalidator.isValid(document.id('item-form'))) {
+		if (task == 'dish.cancel' || document.formvalidator.isValid(document.id('item-form'))) {
 			<?php echo $this->form->getField('description')->save(); ?>
 
-			if (window.opener && (task == 'menu.save' || task == 'menu.cancel')) {
+			if (window.opener && (task == 'dish.save' || task == 'dish.cancel')) {
 				window.opener.document.closeEditWindow = self;
 				window.opener.setTimeout('window.document.closeEditWindow.close()', 1000);
 			}
@@ -76,9 +76,9 @@ if (isset($this->item->params['show_images_backend']) && $this->item->params['sh
 </script>
 <div class="container-popup">
 	<div class="pull-right">
-		<button class="btn btn-primary" type="button" onclick="Joomla.submitbutton('menu.apply');"><?php echo JText::_('JTOOLBAR_APPLY'); ?></button>
-		<button class="btn btn-primary" type="button" onclick="Joomla.submitbutton('menu.save');"><?php echo JText::_('JTOOLBAR_SAVE'); ?></button>
-		<button class="btn" type="button" onclick="Joomla.submitbutton('menu.cancel');"><?php echo JText::_('JCANCEL'); ?></button>
+		<button class="btn btn-primary" type="button" onclick="Joomla.submitbutton('dish.apply');"><?php echo JText::_('JTOOLBAR_APPLY'); ?></button>
+		<button class="btn btn-primary" type="button" onclick="Joomla.submitbutton('dish.save');"><?php echo JText::_('JTOOLBAR_SAVE'); ?></button>
+		<button class="btn" type="button" onclick="Joomla.submitbutton('dish.cancel');"><?php echo JText::_('JCANCEL'); ?></button>
 	</div>
 	<div class="clearfix"></div>
 	<hr class="hr-condensed" />
@@ -86,7 +86,7 @@ if (isset($this->item->params['show_images_backend']) && $this->item->params['sh
 		<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
 		<div class="form-horizontal">
 			<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'general')); ?>
-				<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'general', JText::_('COM_RESTAURANT_FIELDSET_MENU_CONTENT', true)); ?>
+				<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'general', JText::_('COM_RESTAURANT_FIELDSET_DISH_CONTENT', true)); ?>
 					<div class="row-fluid">
 						<div class="span9">
 							<fieldset class="adminform">
@@ -133,7 +133,7 @@ if (isset($this->item->params['show_images_backend']) && $this->item->params['sh
 					</div>
 				<?php endif; ?>
 
-				<?php $this->show_options = $params->show_menu_options; ?>
+				<?php $this->show_options = $params->show_dish_options; ?>
 				<?php echo JLayoutHelper::render('joomla.edit.params', $this); ?>
 
 				<?php if ($this->canDo->get('core.admin')): ?>

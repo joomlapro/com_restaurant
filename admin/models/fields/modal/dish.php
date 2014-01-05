@@ -12,13 +12,13 @@
 defined('JPATH_BASE') or die;
 
 /**
- * Supports a modal menu picker.
+ * Supports a modal dish picker.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
  * @since       3.2
  */
-class JFormFieldModal_Menu extends JFormField
+class JFormFieldModal_Dish extends JFormField
 {
 	/**
 	 * The form field type.
@@ -26,7 +26,7 @@ class JFormFieldModal_Menu extends JFormField
 	 * @var     string
 	 * @since   3.2
 	 */
-	protected $type = 'Modal_Menu';
+	protected $type = 'Modal_Dish';
 
 	/**
 	 * Method to get the field input markup.
@@ -51,7 +51,7 @@ class JFormFieldModal_Menu extends JFormField
 		$script = array();
 
 		// Select button script.
-		$script[] = 'function jSelectMenu_' . $this->id . '(id, title, catid, object) {';
+		$script[] = 'function jSelectDish_' . $this->id . '(id, title, catid, object) {';
 		$script[] = '	document.getElementById("' . $this->id . '_id").value = id;';
 		$script[] = '	document.getElementById("' . $this->id . '_name").value = title;';
 
@@ -75,9 +75,9 @@ class JFormFieldModal_Menu extends JFormField
 		{
 			$scriptClear = true;
 
-			$script[] = 'function jClearMenu(id) {';
+			$script[] = 'function jClearDish(id) {';
 			$script[] = '	document.getElementById(id + "_id").value = "";';
-			$script[] = '	document.getElementById(id + "_name").value = "' . htmlspecialchars(JText::_('COM_RESTAURANT_SELECT_AN_MENU', true), ENT_COMPAT, 'UTF-8') . '";';
+			$script[] = '	document.getElementById(id + "_name").value = "' . htmlspecialchars(JText::_('COM_RESTAURANT_SELECT_AN_DISH', true), ENT_COMPAT, 'UTF-8') . '";';
 			$script[] = '	jQuery("#"+id + "_clear").addClass("hidden");';
 			$script[] = '	if (document.getElementById(id + "_edit")) {';
 			$script[] = '		jQuery("#"+id + "_edit").addClass("hidden");';
@@ -91,7 +91,7 @@ class JFormFieldModal_Menu extends JFormField
 
 		// Setup variables for display.
 		$html = array();
-		$link = 'index.php?option=com_restaurant&amp;view=menus&amp;layout=modal&amp;tmpl=component&amp;function=jSelectMenu_' . $this->id;
+		$link = 'index.php?option=com_restaurant&amp;view=dishes&amp;layout=modal&amp;tmpl=component&amp;function=jSelectDish_' . $this->id;
 
 		if (isset($this->element['language']))
 		{
@@ -104,7 +104,7 @@ class JFormFieldModal_Menu extends JFormField
 
 		// Create the base select statement.
 		$query->select('title')
-			->from($db->quoteName('#__restaurant_menus'))
+			->from($db->quoteName('#__restaurant_dishes'))
 			->where($db->quoteName('id') . ' = ' . $db->quote((int) $this->value));
 
 		// Set the query and load the result.
@@ -121,12 +121,12 @@ class JFormFieldModal_Menu extends JFormField
 
 		if (empty($title))
 		{
-			$title = JText::_('COM_RESTAURANT_SELECT_AN_MENU');
+			$title = JText::_('COM_RESTAURANT_SELECT_AN_DISH');
 		}
 
 		$title = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
 
-		// The active menu id field.
+		// The active dish id field.
 		if (0 == (int) $this->value)
 		{
 			$value = '';
@@ -136,21 +136,21 @@ class JFormFieldModal_Menu extends JFormField
 			$value = (int) $this->value;
 		}
 
-		// The current menu display field.
+		// The current dish display field.
 		$html[] = '<span class="input-append">';
 		$html[] = '<input type="text" class="input-medium" id="' . $this->id . '_name" value="' . $title . '" disabled="disabled" size="35" />';
-		$html[] = '<a class="modal btn hasTooltip" title="' . JHtml::tooltipText('COM_RESTAURANT_CHANGE_MENU') . '" href="' . $link . '&amp;' . JSession::getFormToken() . '=1" rel="{handler: \'iframe\', size: {x: 800, y: 450}}"><i class="icon-file"></i> ' . JText::_('JSELECT') . '</a>';
+		$html[] = '<a class="modal btn hasTooltip" title="' . JHtml::tooltipText('COM_RESTAURANT_CHANGE_DISH') . '" href="' . $link . '&amp;' . JSession::getFormToken() . '=1" rel="{handler: \'iframe\', size: {x: 800, y: 450}}"><i class="icon-file"></i> ' . JText::_('JSELECT') . '</a>';
 
-		// Edit menu button.
+		// Edit dish button.
 		if ($allowEdit)
 		{
-			$html[] = '<a class="btn hasTooltip' . ($value ? '' : ' hidden') . '" href="index.php?option=com_restaurant&layout=modal&tmpl=component&task=menu.edit&id=' . $value . '" target="_blank" title="' . JHtml::tooltipText('COM_RESTAURANT_EDIT_MENU') . '" ><span class="icon-edit"></span> ' . JText::_('JACTION_EDIT') . '</a>';
+			$html[] = '<a class="btn hasTooltip' . ($value ? '' : ' hidden') . '" href="index.php?option=com_restaurant&layout=modal&tmpl=component&task=dish.edit&id=' . $value . '" target="_blank" title="' . JHtml::tooltipText('COM_RESTAURANT_EDIT_DISH') . '" ><span class="icon-edit"></span> ' . JText::_('JACTION_EDIT') . '</a>';
 		}
 
-		// Clear menu button.
+		// Clear dish button.
 		if ($allowClear)
 		{
-			$html[] = '<button id="' . $this->id . '_clear" class="btn' . ($value ? '' : ' hidden') . '" onclick="return jClearMenu(\'' . $this->id . '\')"><span class="icon-remove"></span> ' . JText::_('JCLEAR') . '</button>';
+			$html[] = '<button id="' . $this->id . '_clear" class="btn' . ($value ? '' : ' hidden') . '" onclick="return jClearDish(\'' . $this->id . '\')"><span class="icon-remove"></span> ' . JText::_('JCLEAR') . '</button>';
 		}
 
 		$html[] = '</span>';

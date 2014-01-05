@@ -12,14 +12,14 @@
 defined('_JEXEC') or die;
 
 /**
- * Menus list controller class.
+ * Dishes list controller class.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class RestaurantControllerMenus extends JControllerAdmin
+class RestaurantControllerDishes extends JControllerAdmin
 {
 	/**
 	 * The prefix to use with controller messages.
@@ -27,7 +27,7 @@ class RestaurantControllerMenus extends JControllerAdmin
 	 * @var     string
 	 * @since   3.2
 	 */
-	protected $text_prefix = 'COM_RESTAURANT_MENUS';
+	protected $text_prefix = 'COM_RESTAURANT_DISHES';
 
 	/**
 	 * Constructor.
@@ -41,7 +41,7 @@ class RestaurantControllerMenus extends JControllerAdmin
 	{
 		parent::__construct($config);
 
-		// Menus default form can come from the menus or featured view.
+		// Dishes default form can come from the dishes or featured view.
 		// Adjust the redirect view on the value of 'view' in the request.
 		if ($this->input->get('view') == 'featured')
 		{
@@ -52,7 +52,7 @@ class RestaurantControllerMenus extends JControllerAdmin
 	}
 
 	/**
-	 * Method to toggle the featured setting of a list of menus.
+	 * Method to toggle the featured setting of a list of dishes.
 	 *
 	 * @return  void
 	 *
@@ -73,7 +73,7 @@ class RestaurantControllerMenus extends JControllerAdmin
 		// Access checks.
 		foreach ($ids as $i => $id)
 		{
-			if (!$user->authorise('core.edit.state', 'com_restaurant.menu.' . (int) $id))
+			if (!$user->authorise('core.edit.state', 'com_restaurant.dish.' . (int) $id))
 			{
 				// Prune items that you can not change.
 				unset($ids[$i]);
@@ -98,7 +98,7 @@ class RestaurantControllerMenus extends JControllerAdmin
 			}
 		}
 
-		$this->setRedirect('index.php?option=com_restaurant&view=menus');
+		$this->setRedirect('index.php?option=com_restaurant&view=dishes');
 	}
 
 	/**
@@ -112,8 +112,82 @@ class RestaurantControllerMenus extends JControllerAdmin
 	 *
 	 * @since   3.2
 	 */
-	public function getModel($name = 'Menu', $prefix = 'RestaurantModel', $config = array('ignore_request' => true))
+	public function getModel($name = 'Dish', $prefix = 'RestaurantModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
+	}
+
+	/**
+	 * Method to set the potluck dish.
+	 *
+	 * @return  void
+	 *
+	 * @since   3.2
+	 */
+	public function setPotluck()
+	{
+		// Check for request forgeries.
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+
+		$pks = $this->input->post->get('cid', array(), 'array');
+
+		try
+		{
+			if (empty($pks))
+			{
+				throw new Exception(JText::_('COM_RESTAURANT_NO_DISH_SELECTED'));
+			}
+
+			JArrayHelper::toInteger($pks);
+
+			// Pop off the first element.
+			$id    = array_shift($pks);
+			$model = $this->getModel();
+			$model->setPotluck($id);
+			$this->setMessage(JText::_('COM_RESTAURANT_SUCCESS_POTLUCK_SET'));
+		}
+		catch (Exception $e)
+		{
+			JError::raiseWarning(500, $e->getMessage());
+		}
+
+		$this->setRedirect('index.php?option=com_restaurant&view=dishes');
+	}
+
+	/**
+	 * Method to unset the potluck dish.
+	 *
+	 * @return  void
+	 *
+	 * @since   3.2
+	 */
+	public function unsetPotluck()
+	{
+		// Check for request forgeries.
+		JSession::checkToken('request') or die(JText::_('JINVALID_TOKEN'));
+
+		$pks = $this->input->get->get('cid', array(), 'array');
+
+		JArrayHelper::toInteger($pks);
+
+		try
+		{
+			if (empty($pks))
+			{
+				throw new Exception(JText::_('COM_RESTAURANT_NO_DISH_SELECTED'));
+			}
+
+			// Pop off the first element.
+			$id    = array_shift($pks);
+			$model = $this->getModel();
+			$model->unsetPotluck($id);
+			$this->setMessage(JText::_('COM_RESTAURANT_SUCCESS_POTLUCK_UNSET'));
+		}
+		catch (Exception $e)
+		{
+			JError::raiseWarning(500, $e->getMessage());
+		}
+
+		$this->setRedirect('index.php?option=com_restaurant&view=dishes');
 	}
 }

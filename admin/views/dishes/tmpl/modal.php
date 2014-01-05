@@ -33,11 +33,11 @@ JHtml::_('bootstrap.tooltip');
 JHtml::_('behavior.framework', true);
 
 // Initialiase variables.
-$function  = $app->input->getCmd('function', 'jSelectMenu');
+$function  = $app->input->getCmd('function', 'jSelectDish');
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn  = $this->escape($this->state->get('list.direction'));
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_restaurant&view=menus&layout=modal&tmpl=component&function=' . $function . '&' . JSession::getFormToken() . '=1'); ?>" method="post" name="adminForm" id="adminForm" class="form-inline">
+<form action="<?php echo JRoute::_('index.php?option=com_restaurant&view=dishes&layout=modal&tmpl=component&function=' . $function . '&' . JSession::getFormToken() . '=1'); ?>" method="post" name="adminForm" id="adminForm" class="form-inline">
 	<fieldset class="filter clearfix">
 		<div class="btn-toolbar">
 			<div class="btn-group pull-left">
@@ -142,7 +142,7 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 				?>
 				<tr class="row<?php echo $i % 2; ?>">
 					<td>
-						<a href="javascript:void(0)" onclick="if (window.parent) window.parent.<?php echo $this->escape($function); ?>('<?php echo $item->id; ?>', '<?php echo $this->escape(addslashes($item->title)); ?>', '<?php echo $this->escape($item->catid); ?>', null, '<?php echo $this->escape(RestaurantHelperRoute::getMenuRoute($item->id, $item->catid, $item->language)); ?>', '<?php echo $this->escape($lang); ?>', null);"><?php echo $this->escape($item->title); ?></a>
+						<a href="javascript:void(0)" onclick="if (window.parent) window.parent.<?php echo $this->escape($function); ?>('<?php echo $item->id; ?>', '<?php echo $this->escape(addslashes($item->title)); ?>', '<?php echo $this->escape($item->catid); ?>', null, '<?php echo $this->escape(RestaurantHelperRoute::getDishRoute($item->id, $item->catid, $item->language)); ?>', '<?php echo $this->escape($lang); ?>', null);"><?php echo $this->escape($item->title); ?></a>
 					</td>
 					<td class="center">
 						<?php echo $this->escape($item->access_level); ?>

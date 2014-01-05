@@ -12,7 +12,7 @@
 defined('_JEXEC') or die;
 
 // Load dependent classes.
-require_once __DIR__ . '/menus.php';
+require_once __DIR__ . '/dishes.php';
 
 /**
  * Featured list controller class.
@@ -22,7 +22,7 @@ require_once __DIR__ . '/menus.php';
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class RestaurantControllerFeatured extends RestaurantControllerMenus
+class RestaurantControllerFeatured extends RestaurantControllerDishes
 {
 	/**
 	 * Removes an item.
@@ -43,7 +43,7 @@ class RestaurantControllerFeatured extends RestaurantControllerMenus
 		// Access checks.
 		foreach ($ids as $i => $id)
 		{
-			if (!$user->authorise('core.delete', 'com_restaurant.menu.' . (int) $id))
+			if (!$user->authorise('core.delete', 'com_restaurant.dish.' . (int) $id))
 			{
 				// Prune items that you can not delete.
 				unset($ids[$i]);
@@ -72,7 +72,7 @@ class RestaurantControllerFeatured extends RestaurantControllerMenus
 	}
 
 	/**
-	 * Method to publish a list of menus.
+	 * Method to publish a list of dishes.
 	 *
 	 * @return  void
 	 *

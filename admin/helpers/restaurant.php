@@ -33,9 +33,9 @@ class RestaurantHelper extends JHelperContent
 	public static function addSubmenu($vName)
 	{
 		JHtmlSidebar::addEntry(
-			JText::_('COM_RESTAURANT_SUBMENU_MENUS'),
-			'index.php?option=com_restaurant&view=menus',
-			$vName == 'menus'
+			JText::_('COM_RESTAURANT_SUBMENU_DISHES'),
+			'index.php?option=com_restaurant&view=dishes',
+			$vName == 'dishes'
 		);
 
 		JHtmlSidebar::addEntry(

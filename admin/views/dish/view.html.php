@@ -12,14 +12,14 @@
 defined('_JEXEC') or die;
 
 /**
- * View to edit a menu.
+ * View to edit a dish.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class RestaurantViewMenu extends JViewLegacy
+class RestaurantViewDish extends JViewLegacy
 {
 	/**
 	 * The form to use for the view.
@@ -59,7 +59,7 @@ class RestaurantViewMenu extends JViewLegacy
 			$this->form  = $this->get('Form');
 			$this->item  = $this->get('Item');
 			$this->state = $this->get('State');
-			$this->canDo = MenusHelper::getActions($this->state->get('filter.category_id'), 0, 'com_restaurant');
+			$this->canDo = DishesHelper::getActions($this->state->get('filter.category_id'), 0, 'com_restaurant');
 		}
 		catch (Exception $e)
 		{
@@ -99,16 +99,16 @@ class RestaurantViewMenu extends JViewLegacy
 		// Since we do not track these assets at the item level, use the category id.
 		$canDo      = $this->canDo;
 
-		JToolbarHelper::title(JText::_('COM_RESTAURANT_PAGE_' . ($checkedOut ? 'VIEW_MENU' : ($isNew ? 'ADD_MENU' : 'EDIT_MENU'))), 'pencil-2 menu-add');
+		JToolbarHelper::title(JText::_('COM_RESTAURANT_PAGE_' . ($checkedOut ? 'VIEW_DISH' : ($isNew ? 'ADD_DISH' : 'EDIT_DISH'))), 'pencil-2 dish-add');
 
 		// Built the actions for new and existing records.
 		// For new records, check the create permission.
 		if ($isNew && (count($user->getAuthorisedCategories('com_restaurant', 'core.create')) > 0))
 		{
-			JToolbarHelper::apply('menu.apply');
-			JToolbarHelper::save('menu.save');
-			JToolbarHelper::save2new('menu.save2new');
-			JToolbarHelper::cancel('menu.cancel');
+			JToolbarHelper::apply('dish.apply');
+			JToolbarHelper::save('dish.save');
+			JToolbarHelper::save2new('dish.save2new');
+			JToolbarHelper::cancel('dish.cancel');
 		}
 		else
 		{
@@ -118,13 +118,13 @@ class RestaurantViewMenu extends JViewLegacy
 				// Since it's an existing record, check the edit permission, or fall back to edit own if the owner.
 				if ($canDo->get('core.edit') || ($canDo->get('core.edit.own') && $this->item->created_by == $userId))
 				{
-					JToolbarHelper::apply('menu.apply');
-					JToolbarHelper::save('menu.save');
+					JToolbarHelper::apply('dish.apply');
+					JToolbarHelper::save('dish.save');
 
 					// We can save this record, but check the create permission to see if we can return to make a new one.
 					if ($canDo->get('core.create'))
 					{
-						JToolbarHelper::save2new('menu.save2new');
+						JToolbarHelper::save2new('dish.save2new');
 					}
 				}
 			}
@@ -132,17 +132,17 @@ class RestaurantViewMenu extends JViewLegacy
 			// If checked out, we can still save.
 			if ($canDo->get('core.create'))
 			{
-				JToolbarHelper::save2copy('menu.save2copy');
+				JToolbarHelper::save2copy('dish.save2copy');
 			}
 
 			if ($this->state->params->get('save_history', 1) && $user->authorise('core.edit'))
 			{
-				JToolbarHelper::versions('com_restaurant.menu', $this->item->id);
+				JToolbarHelper::versions('com_restaurant.dish', $this->item->id);
 			}
 
-			JToolbarHelper::cancel('menu.cancel', 'JTOOLBAR_CLOSE');
+			JToolbarHelper::cancel('dish.cancel', 'JTOOLBAR_CLOSE');
 		}
 
-		JToolBarHelper::help('menu', $com = true);
+		JToolBarHelper::help('dish', $com = true);
 	}
 }

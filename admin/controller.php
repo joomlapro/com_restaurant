@@ -27,7 +27,7 @@ class RestaurantController extends JControllerLegacy
 	 * @var     string
 	 * @since   3.2
 	 */
-	protected $default_view = 'menus';
+	protected $default_view = 'dishes';
 
 	/**
 	 * Method to display a view.
@@ -47,12 +47,12 @@ class RestaurantController extends JControllerLegacy
 		$id     = $this->input->getInt('id');
 
 		// Check for edit form.
-		if ($view == 'menu' && $layout == 'edit' && !$this->checkEditId('com_restaurant.edit.menu', $id))
+		if ($view == 'dish' && $layout == 'edit' && !$this->checkEditId('com_restaurant.edit.dish', $id))
 		{
 			// Somehow the person just went to the form - we do not allow that.
 			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
 			$this->setMessage($this->getError(), 'error');
-			$this->setRedirect(JRoute::_('index.php?option=com_restaurant&view=menus', false));
+			$this->setRedirect(JRoute::_('index.php?option=com_restaurant&view=dishes', false));
 
 			return false;
 		}

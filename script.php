@@ -48,16 +48,16 @@ class Com_RestaurantInstallerScript
 	 */
 	public function postflight($route, JAdapterInstance $adapter)
 	{
-		// Adding content type for menus.
+		// Adding content type for dishes.
 		$table = JTable::getInstance('Contenttype', 'JTable');
 
-		if (!$table->load(array('type_alias' => 'com_restaurant.menu')))
+		if (!$table->load(array('type_alias' => 'com_restaurant.dish')))
 		{
 			// Table column.
 			$special = new stdClass;
-			$special->dbtable = '#__restaurant_menus';
+			$special->dbtable = '#__restaurant_dishes';
 			$special->key     = 'id';
-			$special->type    = 'Menu';
+			$special->type    = 'Dish';
 			$special->prefix  = 'RestaurantTable';
 			$special->config  = 'array()';
 
@@ -155,18 +155,18 @@ class Com_RestaurantInstallerScript
 			);
 
 			$content_history_options = new stdClass;
-			$content_history_options->formFile      = 'administrator/components/com_restaurant/models/forms/menu.xml';
+			$content_history_options->formFile      = 'administrator/components/com_restaurant/models/forms/dish.xml';
 			$content_history_options->hideFields    = $hideFields;
 			$content_history_options->ignoreChanges = $ignoreChanges;
 			$content_history_options->convertToInt  = $convertToInt;
 			$content_history_options->displayLookup = $displayLookup;
 
-			$content_types['type_title']              = 'Menu';
-			$content_types['type_alias']              = 'com_restaurant.menu';
+			$content_types['type_title']              = 'Dish';
+			$content_types['type_alias']              = 'com_restaurant.dish';
 			$content_types['table']                   = json_encode($table_object);
 			$content_types['rules']                   = '';
 			$content_types['field_mappings']          = json_encode($field_mappings);
-			$content_types['router']                  = 'RestaurantHelperRoute::getMenuRoute';
+			$content_types['router']                  = 'RestaurantHelperRoute::getDishRoute';
 			$content_types['content_history_options'] = json_encode($content_history_options);
 
 			$table->save($content_types);
@@ -298,7 +298,7 @@ class Com_RestaurantInstallerScript
 			$content_history_options->convertToInt  = $convertToInt;
 			$content_history_options->displayLookup = $displayLookup;
 
-			$content_types['type_title']              = 'Menu Category';
+			$content_types['type_title']              = 'Dish Category';
 			$content_types['type_alias']              = 'com_restaurant.category';
 			$content_types['table']                   = json_encode($table_object);
 			$content_types['rules']                   = '';
@@ -400,7 +400,7 @@ class Com_RestaurantInstallerScript
 
 		// Updating all restaurant without category to have this new one.
 		$query = $db->getQuery(true)
-			->update($db->quoteName('#__restaurant_menus'))
+			->update($db->quoteName('#__restaurant_dishes'))
 			->set($db->quoteName('catid') . ' = ' . $db->quote((int) $id))
 			->where($db->quoteName('catid') . ' = ' . $db->quote(0));
 

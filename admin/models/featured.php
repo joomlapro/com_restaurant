@@ -12,7 +12,7 @@
 defined('_JEXEC') or die;
 
 // Load dependent classes.
-require_once __DIR__ . '/menus.php';
+require_once __DIR__ . '/dishes.php';
 
 /**
  * Featured Model.
@@ -22,14 +22,14 @@ require_once __DIR__ . '/menus.php';
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class RestaurantModelFeatured extends RestaurantModelMenus
+class RestaurantModelFeatured extends RestaurantModelDishes
 {
 	/**
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
 	 *
-	 * @see     RestaurantModelMenus
+	 * @see     RestaurantModelDishes
 	 * @since   3.2
 	 */
 	public function __construct($config = array())
@@ -89,7 +89,7 @@ class RestaurantModelFeatured extends RestaurantModelMenus
 					', a.publish_up, a.publish_down, a.featured'
 			)
 		);
-		$query->from('#__restaurant_menus AS a');
+		$query->from('#__restaurant_dishes AS a');
 
 		// Join over the language.
 		$query->select('l.title AS language_title')
@@ -97,7 +97,7 @@ class RestaurantModelFeatured extends RestaurantModelMenus
 
 		// Join over the content table.
 		$query->select('fp.ordering')
-			->join('INNER', '#__restaurant_menus_frontpage AS fp ON fp.menu_id = a.id');
+			->join('INNER', '#__restaurant_dishes_frontpage AS fp ON fp.dish_id = a.id');
 
 		// Join over the users for the checked out user.
 		$query->select('uc.name AS editor')

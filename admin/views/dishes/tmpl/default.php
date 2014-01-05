@@ -33,8 +33,8 @@ $saveOrder = $listOrder == 'a.ordering';
 
 if ($saveOrder)
 {
-	$saveOrderingUrl = 'index.php?option=com_restaurant&task=menus.saveOrderAjax&tmpl=component';
-	JHtml::_('sortablelist.sortable', 'menuList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+	$saveOrderingUrl = 'index.php?option=com_restaurant&task=dishes.saveOrderAjax&tmpl=component';
+	JHtml::_('sortablelist.sortable', 'dishList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 
 $assoc = JLanguageAssociations::isEnabled();
@@ -54,7 +54,7 @@ $assoc = JLanguageAssociations::isEnabled();
 		Joomla.tableOrdering(order, dirn, '');
 	}
 </script>
-<form action="<?php echo JRoute::_('index.php?option=com_restaurant&view=menus'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_restaurant&view=dishes'); ?>" method="post" name="adminForm" id="adminForm">
 	<?php if (!empty($this->sidebar)): ?>
 		<div id="j-sidebar-container" class="span2">
 			<?php echo $this->sidebar; ?>
@@ -72,7 +72,7 @@ $assoc = JLanguageAssociations::isEnabled();
 				<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 			</div>
 		<?php else: ?>
-			<table class="table table-striped" id="menuList">
+			<table class="table table-striped" id="dishList">
 				<thead>
 					<tr>
 						<th width="1%" class="nowrap center hidden-phone">
@@ -86,6 +86,9 @@ $assoc = JLanguageAssociations::isEnabled();
 						</th>
 						<th>
 							<?php echo JHtml::_('searchtools.sort', 'COM_RESTAURANT_HEADING_TITLE', 'a.title', $listDirn, $listOrder); ?>
+						</th>
+						<th width="5%" class="nowrap hidden-phone">
+							<?php echo JText::_('COM_RESTAURANT_HEADING_POTLUCK'); ?>
 						</th>
 						<th width="10%" class="nowrap hidden-phone">
 							<?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_ACCESS', 'a.access', $listDirn, $listOrder); ?>
@@ -123,10 +126,10 @@ $assoc = JLanguageAssociations::isEnabled();
 					<?php foreach ($this->items as $i => $item):
 						$ordering   = ($listOrder == 'a.ordering');
 						$canCreate  = $user->authorise('core.create',     'com_restaurant.category.' . $item->catid);
-						$canEdit    = $user->authorise('core.edit',       'com_restaurant.menu.' . $item->id);
+						$canEdit    = $user->authorise('core.edit',       'com_restaurant.dish.' . $item->id);
 						$canCheckin = $user->authorise('core.manage',     'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
-						$canEditOwn = $user->authorise('core.edit.own',   'com_restaurant.menu.' . $item->id) && $item->created_by == $userId;
-						$canChange  = $user->authorise('core.edit.state', 'com_restaurant.menu.' . $item->id) && $canCheckin;
+						$canEditOwn = $user->authorise('core.edit.own',   'com_restaurant.dish.' . $item->id) && $item->created_by == $userId;
+						$canChange  = $user->authorise('core.edit.state', 'com_restaurant.dish.' . $item->id) && $canCheckin;
 						?>
 						<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid; ?>">
 							<td class="order nowrap center hidden-phone">
@@ -154,15 +157,15 @@ $assoc = JLanguageAssociations::isEnabled();
 							</td>
 							<td class="center">
 								<div class="btn-group">
-									<?php echo JHtml::_('jgrid.published', $item->state, $i, 'menus.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
-									<?php echo JHtml::_('menu.featured', $item->featured, $i, $canChange); ?>
+									<?php echo JHtml::_('jgrid.published', $item->state, $i, 'dishes.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
+									<?php echo JHtml::_('dish.featured', $item->featured, $i, $canChange); ?>
 									<?php
 									// Create dropdown items.
 									$action = $archived ? 'unarchive' : 'archive';
-									JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'menus');
+									JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'dishes');
 
 									$action = $trashed ? 'untrash' : 'trash';
-									JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'menus');
+									JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'dishes');
 
 									// Render dropdown list.
 									echo JHtml::_('actionsdropdown.render', $this->escape($item->title));
@@ -172,7 +175,7 @@ $assoc = JLanguageAssociations::isEnabled();
 							<td class="nowrap has-context">
 								<div class="pull-left">
 									<?php if ($item->checked_out): ?>
-										<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'menus.', $canCheckin); ?>
+										<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'dishes.', $canCheckin); ?>
 									<?php endif; ?>
 									<?php if ($item->language == '*'): ?>
 										<?php $language = JText::alt('JALL', 'language'); ?>
@@ -180,7 +183,7 @@ $assoc = JLanguageAssociations::isEnabled();
 										<?php $language = $item->language_title ? $this->escape($item->language_title) : JText::_('JUNDEFINED'); ?>
 									<?php endif; ?>
 									<?php if ($canEdit || $canEditOwn): ?>
-										<a href="<?php echo JRoute::_('index.php?option=com_restaurant&task=menu.edit&id=' . (int) $item->id); ?>" title="<?php echo JText::_('JACTION_EDIT'); ?>"><?php echo $this->escape($item->title); ?></a>
+										<a href="<?php echo JRoute::_('index.php?option=com_restaurant&task=dish.edit&id=' . (int) $item->id); ?>" title="<?php echo JText::_('JACTION_EDIT'); ?>"><?php echo $this->escape($item->title); ?></a>
 									<?php else: ?>
 										<span title="<?php echo JText::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
 									<?php endif; ?>
@@ -189,13 +192,16 @@ $assoc = JLanguageAssociations::isEnabled();
 									</div>
 								</div>
 							</td>
+							<td class="center">
+								<?php echo JHtml::_('dish.ispotluck', $item->potluck != '0', $i, 'dishes.', $canChange && $item->potluck != '1'); ?>
+							</td>
 							<td class="small hidden-phone">
 								<?php echo $this->escape($item->access_level); ?>
 							</td>
 							<?php if ($assoc): ?>
 								<td class="hidden-phone">
 									<?php if ($item->association): ?>
-										<?php echo JHtml::_('menu.association', $item->id); ?>
+										<?php echo JHtml::_('dish.association', $item->id); ?>
 									<?php endif; ?>
 								</td>
 							<?php endif; ?>

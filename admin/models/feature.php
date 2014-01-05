@@ -12,7 +12,7 @@
 defined('_JEXEC') or die;
 
 // Load dependent classes.
-require_once __DIR__ . '/menu.php';
+require_once __DIR__ . '/dish.php';
 
 /**
  * Feature model.
@@ -22,7 +22,7 @@ require_once __DIR__ . '/menu.php';
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class RestaurantModelFeature extends RestaurantModelMenu
+class RestaurantModelFeature extends RestaurantModelDish
 {
 	/**
 	 * Method to get a table object, load it if necessary.

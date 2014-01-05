@@ -24,7 +24,7 @@ $user      = JFactory::getUser();
 $userId    = $user->get('id');
 $listDirn  = $this->escape($this->state->get('list.direction'));
 $listOrder = $this->escape($this->state->get('list.ordering'));
-$canOrder  = $user->authorise('core.edit.state', 'com_restaurant.menu');
+$canOrder  = $user->authorise('core.edit.state', 'com_restaurant.dish');
 $archived  = $this->state->get('filter.state') == 2 ? true : false;
 $trashed   = $this->state->get('filter.state') == -2 ? true : false;
 $saveOrder = $listOrder == 'fp.ordering';
@@ -47,7 +47,7 @@ $saveOrder = $listOrder == 'fp.ordering';
 				<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 			</div>
 		<?php else: ?>
-			<table class="table table-striped" id="menuList">
+			<table class="table table-striped" id="dishList">
 				<thead>
 					<tr>
 						<th width="1%" class="hidden-phone">
@@ -95,11 +95,11 @@ $saveOrder = $listOrder == 'fp.ordering';
 						$item->max_ordering = 0;
 
 						$ordering   = ($listOrder == 'fp.ordering');
-						$assetId    = 'com_restaurant.menu.' . $item->id;
+						$assetId    = 'com_restaurant.dish.' . $item->id;
 						$canCreate  = $user->authorise('core.create',     'com_restaurant.category.' . $item->catid);
-						$canEdit    = $user->authorise('core.edit',       'com_restaurant.menu.' . $item->id);
+						$canEdit    = $user->authorise('core.edit',       'com_restaurant.dish.' . $item->id);
 						$canCheckin = $user->authorise('core.manage',     'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
-						$canChange  = $user->authorise('core.edit.state', 'com_restaurant.menu.' . $item->id) && $canCheckin;
+						$canChange  = $user->authorise('core.edit.state', 'com_restaurant.dish.' . $item->id) && $canCheckin;
 						?>
 						<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid; ?>">
 							<td class="center hidden-phone">
@@ -107,15 +107,15 @@ $saveOrder = $listOrder == 'fp.ordering';
 							</td>
 							<td class="center">
 								<div class="btn-group">
-									<?php echo JHtml::_('jgrid.published', $item->state, $i, 'menus.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
-									<?php echo JHtml::_('menu.featured', $item->featured, $i, $canChange); ?>
+									<?php echo JHtml::_('jgrid.published', $item->state, $i, 'dishes.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
+									<?php echo JHtml::_('dish.featured', $item->featured, $i, $canChange); ?>
 									<?php
 									// Create dropdown items.
 									$action = $archived ? 'unarchive' : 'archive';
-									JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'menus');
+									JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'dishes');
 
 									$action = $trashed ? 'untrash' : 'trash';
-									JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'menus');
+									JHtml::_('actionsdropdown.' . $action, 'cb' . $i, 'dishes');
 
 									// Render dropdown list.
 									echo JHtml::_('actionsdropdown.render', $this->escape($item->title));
@@ -125,7 +125,7 @@ $saveOrder = $listOrder == 'fp.ordering';
 							<td class="nowrap has-context">
 								<div class="pull-left">
 									<?php if ($item->checked_out): ?>
-										<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'menus.', $canCheckin); ?>
+										<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'dishes.', $canCheckin); ?>
 									<?php endif; ?>
 									<?php if ($item->language == '*'): ?>
 										<?php $language = JText::alt('JALL', 'language'); ?>
@@ -133,7 +133,7 @@ $saveOrder = $listOrder == 'fp.ordering';
 										<?php $language = $item->language_title ? $this->escape($item->language_title): JText::_('JUNDEFINED'); ?>
 									<?php endif; ?>
 									<?php if ($canEdit): ?>
-										<a href="<?php echo JRoute::_('index.php?option=com_restaurant&task=menu.edit&return=featured&id=' . $item->id); ?>" title="<?php echo JText::_('JACTION_EDIT'); ?>"><?php echo $this->escape($item->title); ?></a>
+										<a href="<?php echo JRoute::_('index.php?option=com_restaurant&task=dish.edit&return=featured&id=' . $item->id); ?>" title="<?php echo JText::_('JACTION_EDIT'); ?>"><?php echo $this->escape($item->title); ?></a>
 									<?php else: ?>
 										<span title="<?php echo JText::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
 									<?php endif; ?>

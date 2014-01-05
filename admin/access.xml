@@ -52,7 +52,7 @@
 			title="JACTION_EDITOWN"
 			description="COM_CATEGORIES_ACCESS_EDITOWN_DESC" />
 	</section>
-	<section name="menu">
+	<section name="dish">
 		<action
 			name="core.delete"
 			title="JACTION_DELETE"

@@ -12,14 +12,14 @@
 defined('_JEXEC') or die;
 
 /**
- * Methods supporting a list of menu records.
+ * Methods supporting a list of dish records.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class RestaurantModelMenus extends JModelList
+class RestaurantModelDishes extends JModelList
 {
 	/**
 	 * Constructor.
@@ -171,12 +171,12 @@ class RestaurantModelMenus extends JModelList
 		$query->select(
 			$this->getState(
 				'list.select',
-				'a.id, a.catid, a.title, a.alias, a.checked_out, a.checked_out_time' .
+				'a.id, a.catid, a.title, a.alias, a.potluck, a.checked_out, a.checked_out_time' .
 					', a.state, a.ordering, a.access, a.language, a.created, a.created_by, a.created_by_alias, a.featured, a.hits' .
 					', a.publish_up, a.publish_down'
 			)
 		);
-		$query->from($db->quoteName('#__restaurant_menus') . ' AS a');
+		$query->from($db->quoteName('#__restaurant_dishes') . ' AS a');
 
 		// Join over the language.
 		$query->select('l.title AS language_title')
@@ -308,7 +308,7 @@ class RestaurantModelMenus extends JModelList
 				->join(
 					'LEFT', $db->quoteName('#__contentitem_tag_map', 'tagmap')
 					. ' ON ' . $db->quoteName('tagmap.content_item_id') . ' = ' . $db->quoteName('a.id')
-					. ' AND ' . $db->quoteName('tagmap.type_alias') . ' = ' . $db->quote('com_restaurant.menu')
+					. ' AND ' . $db->quoteName('tagmap.type_alias') . ' = ' . $db->quote('com_restaurant.dish')
 				);
 		}
 
@@ -352,7 +352,7 @@ class RestaurantModelMenus extends JModelList
 		// Construct the query.
 		$query->select('u.id AS value, u.name AS text')
 			->from($db->quoteName('#__users') . ' AS u')
-			->join('INNER', $db->quoteName('#__restaurant_menus') . ' AS c ON c.created_by = u.id')
+			->join('INNER', $db->quoteName('#__restaurant_dishes') . ' AS c ON c.created_by = u.id')
 			->group($db->quoteName(array('u.id', 'u.name')))
 			->order($db->quoteName('u.name'));
 
@@ -364,7 +364,7 @@ class RestaurantModelMenus extends JModelList
 	}
 
 	/**
-	 * Method to get a list of menus.
+	 * Method to get a list of dishes.
 	 * Overridden to add a check for access levels.
 	 *
 	 * @return  mixed  An array of data items on success, false on failure.
@@ -383,7 +383,7 @@ class RestaurantModelMenus extends JModelList
 
 			for ($x = 0, $count = count($items); $x < $count; $x++)
 			{
-				// Check the access level. Remove menus the user should not see.
+				// Check the access level. Remove dishes the user should not see.
 				if (!in_array($items[$x]->access, $groups))
 				{
 					unset($items[$x]);

@@ -12,29 +12,29 @@
 defined('_JEXEC') or die;
 
 /**
- * Utility class working with menu.
+ * Utility class working with dish.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-abstract class JHtmlMenu
+abstract class JHtmlDish
 {
 	/**
 	 * Render the list of associated items.
 	 *
-	 * @param   int  $menuid  The menu item id.
+	 * @param   int  $dishid  The dish item id.
 	 *
 	 * @return  string  The language HTML.
 	 */
-	public static function association($menuid)
+	public static function association($dishid)
 	{
 		// Defaults.
 		$html = '';
 
 		// Get the associations.
-		if ($associations = JLanguageAssociations::getAssociations('com_restaurant', '#__restaurant_menus', 'com_restaurant.item', $menuid))
+		if ($associations = JLanguageAssociations::getAssociations('com_restaurant', '#__restaurant_dishes', 'com_restaurant.item', $dishid))
 		{
 			foreach ($associations as $tag => $associated)
 			{
@@ -46,13 +46,13 @@ abstract class JHtmlMenu
 			$query = $db->getQuery(true);
 
 			// Create the base select statement.
-			$query->select('m.*')
+			$query->select('d.*')
 				->select('l.sef as lang_sef')
-				->from('#__restaurant_menus as m')
+				->from('#__restaurant_dishes as d')
 				->select('cat.title as category_title')
-				->join('LEFT', '#__categories as cat ON cat.id = m.catid')
-				->where('m.id IN (' . implode(',', array_values($associations)) . ')')
-				->join('LEFT', '#__languages as l ON m.language = l.lang_code')
+				->join('LEFT', '#__categories as cat ON cat.id = d.catid')
+				->where('d.id IN (' . implode(',', array_values($associations)) . ')')
+				->join('LEFT', '#__languages as l ON d.language = l.lang_code')
 				->select('l.image')
 				->select('l.title as language_title');
 
@@ -73,7 +73,7 @@ abstract class JHtmlMenu
 				foreach ($items as &$item)
 				{
 					$text = strtoupper($item->lang_sef);
-					$url = JRoute::_('index.php?option=com_restaurant&task=menu.edit&id=' . (int) $item->id);
+					$url = JRoute::_('index.php?option=com_restaurant&task=dish.edit&id=' . (int) $item->id);
 					$tooltipParts = array(
 						JHtml::_('image', 'mod_languages/' . $item->image . '.gif',
 							$item->language_title,
@@ -110,8 +110,8 @@ abstract class JHtmlMenu
 
 		// Array of image, task, title, action.
 		$states = array(
-			0 => array('unfeatured', 'menus.featured', 'COM_RESTAURANT_UNFEATURED', 'COM_RESTAURANT_TOGGLE_TO_FEATURE'),
-			1 => array('featured', 'menus.unfeatured', 'COM_RESTAURANT_FEATURED', 'COM_RESTAURANT_TOGGLE_TO_UNFEATURE'),
+			0 => array('unfeatured', 'dishes.featured', 'COM_RESTAURANT_UNFEATURED', 'COM_RESTAURANT_TOGGLE_TO_FEATURE'),
+			1 => array('featured', 'dishes.unfeatured', 'COM_RESTAURANT_FEATURED', 'COM_RESTAURANT_TOGGLE_TO_UNFEATURE'),
 		);
 		$state  = JArrayHelper::getValue($states, (int) $value, $states[1]);
 		$icon   = $state[0];
@@ -126,5 +126,37 @@ abstract class JHtmlMenu
 		}
 
 		return $html;
+	}
+
+	/**
+	 * Returns a isPotluck state on a grid.
+	 *
+	 * @param   integer       $value     The state value.
+	 * @param   integer       $i         The row index.
+	 * @param   string|array  $prefix    An optional task prefix or an array of options.
+	 * @param   boolean       $enabled   An optional setting for access control on the action.
+	 * @param   string        $checkbox  An optional prefix for checkboxes.
+	 *
+	 * @return  string  The HTML markup.
+	 *
+	 * @see     JHtmlJGrid::state()
+	 * @since   3.2
+	 */
+	public static function ispotluck($value, $i, $prefix = '', $enabled = true, $checkbox = 'cb')
+	{
+		if (is_array($prefix))
+		{
+			$options = $prefix;
+			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
+			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+		}
+
+		$states = array(
+			0 => array('setPotluck', '', 'COM_RESTAURANT_SETPOTLUCK_ITEM', '', 1, 'unfeatured', 'unfeatured'),
+			1 => array('unsetPotluck', 'COM_RESTAURANT_POTLUCK', 'COM_RESTAURANT_UNSETPOTLUCK_ITEM', 'COM_RESTAURANT_POTLUCK', 1, 'featured', 'featured'),
+		);
+
+		return JHtmlJGrid::state($states, $value, $i, $prefix, $enabled, true, $checkbox);
 	}
 }

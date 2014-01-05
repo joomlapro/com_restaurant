@@ -12,14 +12,14 @@
 defined('_JEXEC') or die;
 
 /**
- * View class for a list of menus.
+ * View class for a list of dishes.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class RestaurantViewMenus extends JViewLegacy
+class RestaurantViewDishes extends JViewLegacy
 {
 	/**
 	 * List of update items.
@@ -110,7 +110,7 @@ class RestaurantViewMenus extends JViewLegacy
 		if ($this->getLayout() !== 'modal')
 		{
 			// Load the submenu.
-			RestaurantHelper::addSubmenu('menus');
+			RestaurantHelper::addSubmenu('dishes');
 
 			$this->addToolbar();
 			$this->sidebar = JHtmlSidebar::render();
@@ -130,40 +130,40 @@ class RestaurantViewMenus extends JViewLegacy
 	{
 		// Initialise variables.
 		$state = $this->get('State');
-		$canDo = MenusHelper::getActions($state->get('filter.category_id'), 0, 'com_restaurant');
+		$canDo = DishesHelper::getActions($state->get('filter.category_id'), 0, 'com_restaurant');
 		$user  = JFactory::getUser();
 
 		// Get the toolbar object instance.
 		$bar   = JToolBar::getInstance('toolbar');
 
-		JToolbarHelper::title(JText::_('COM_RESTAURANT_MANAGER_MENUS_TITLE'), 'stack menus');
+		JToolbarHelper::title(JText::_('COM_RESTAURANT_MANAGER_DISHES_TITLE'), 'stack dishes');
 
 		if ($canDo->get('core.create') && count($user->getAuthorisedCategories('com_restaurant', 'core.create')) > 0)
 		{
-			JToolbarHelper::addNew('menu.add');
+			JToolbarHelper::addNew('dish.add');
 		}
 
 		if (($canDo->get('core.edit')) || ($canDo->get('core.edit.own')))
 		{
-			JToolbarHelper::editList('menu.edit');
+			JToolbarHelper::editList('dish.edit');
 		}
 
 		if ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::publish('menus.publish', 'JTOOLBAR_PUBLISH', true);
-			JToolbarHelper::unpublish('menus.unpublish', 'JTOOLBAR_UNPUBLISH', true);
-			JToolbarHelper::custom('menus.featured', 'featured.png', 'featured_f2.png', 'JFEATURED', true);
-			JToolbarHelper::archiveList('menus.archive');
-			JToolbarHelper::checkin('menus.checkin');
+			JToolbarHelper::publish('dishes.publish', 'JTOOLBAR_PUBLISH', true);
+			JToolbarHelper::unpublish('dishes.unpublish', 'JTOOLBAR_UNPUBLISH', true);
+			JToolbarHelper::custom('dishes.featured', 'featured.png', 'featured_f2.png', 'JFEATURED', true);
+			JToolbarHelper::archiveList('dishes.archive');
+			JToolbarHelper::checkin('dishes.checkin');
 		}
 
 		if ($state->get('filter.state') == -2 && $canDo->get('core.delete'))
 		{
-			JToolbarHelper::deleteList('', 'menus.delete', 'JTOOLBAR_EMPTY_TRASH');
+			JToolbarHelper::deleteList('', 'dishes.delete', 'JTOOLBAR_EMPTY_TRASH');
 		}
 		elseif ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::trash('menus.trash');
+			JToolbarHelper::trash('dishes.trash');
 		}
 
 		// Add a batch button.
@@ -186,6 +186,6 @@ class RestaurantViewMenus extends JViewLegacy
 			JToolbarHelper::preferences('com_restaurant');
 		}
 
-		JToolBarHelper::help('menus', $com = true);
+		JToolBarHelper::help('dishes', $com = true);
 	}
 }

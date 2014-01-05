@@ -1,3 +1,3 @@
-DROP TABLE IF EXISTS `#__restaurant_menus`;
+DROP TABLE IF EXISTS `#__restaurant_dishes`;
 
-DROP TABLE IF EXISTS `#__restaurant_menus_frontpage`;
+DROP TABLE IF EXISTS `#__restaurant_dishes_frontpage`;

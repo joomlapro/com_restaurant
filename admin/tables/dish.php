@@ -12,14 +12,14 @@
 defined('_JEXEC') or die;
 
 /**
- * Menu Table class.
+ * Dish Table class.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class RestaurantTableMenu extends JTable
+class RestaurantTableDish extends JTable
 {
 	/**
 	 * Constructor.
@@ -30,13 +30,13 @@ class RestaurantTableMenu extends JTable
 	 */
 	public function __construct(& $db)
 	{
-		parent::__construct('#__restaurant_menus', 'id', $db);
+		parent::__construct('#__restaurant_dishes', 'id', $db);
 
 		// Register Observer for Tags.
-		JObserverMapper::addObserverClassToClass('JTableObserverTags', 'RestaurantTableMenu', array('typeAlias' => 'com_restaurant.menu'));
+		JObserverMapper::addObserverClassToClass('JTableObserverTags', 'RestaurantTableDish', array('typeAlias' => 'com_restaurant.dish'));
 
 		// Register Observer for Version History.
-		JObserverMapper::addObserverClassToClass('JTableObserverContenthistory', 'RestaurantTableMenu', array('typeAlias' => 'com_restaurant.menu'));
+		JObserverMapper::addObserverClassToClass('JTableObserverContenthistory', 'RestaurantTableDish', array('typeAlias' => 'com_restaurant.dish'));
 	}
 
 	/**
@@ -52,7 +52,7 @@ class RestaurantTableMenu extends JTable
 	{
 		$k = $this->_tbl_key;
 
-		return 'com_restaurant.menu.' . (int) $this->$k;
+		return 'com_restaurant.dish.' . (int) $this->$k;
 	}
 
 	/**
@@ -81,7 +81,7 @@ class RestaurantTableMenu extends JTable
 	{
 		$assetId = null;
 
-		// This is a menu under a category.
+		// This is a dish under a category.
 		if ($this->catid)
 		{
 			// Build the query to get the asset id for the parent category.
@@ -227,7 +227,7 @@ class RestaurantTableMenu extends JTable
 	}
 
 	/**
-	 * Overload the store method for the Menus table.
+	 * Overload the store method for the Dishes table.
 	 *
 	 * @param   boolean  $updateNulls  Toggle whether null values should be updated.
 	 *
@@ -249,7 +249,7 @@ class RestaurantTableMenu extends JTable
 		}
 		else
 		{
-			// New menu. A menu created and created_by field can be set by the user,
+			// New dish. A dish created and created_by field can be set by the user,
 			// so we do not touch either of these if they are set.
 			if (!(int) $this->created)
 			{
@@ -263,11 +263,11 @@ class RestaurantTableMenu extends JTable
 		}
 
 		// Verify that the alias is unique.
-		$table = JTable::getInstance('Menu', 'RestaurantTable');
+		$table = JTable::getInstance('Dish', 'RestaurantTable');
 
 		if ($table->load(array('alias' => $this->alias, 'catid' => $this->catid)) && ($table->id != $this->id || $this->id == 0))
 		{
-			$this->setError(JText::_('COM_RESTAURANT_ERROR_MENU_UNIQUE_ALIAS'));
+			$this->setError(JText::_('COM_RESTAURANT_ERROR_DISH_UNIQUE_ALIAS'));
 
 			return false;
 		}

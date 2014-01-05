@@ -64,10 +64,10 @@
 				for the file to be valid XML and be parsed by the installer.
 			-->
 			<menu
-				link="option=com_restaurant&amp;view=menus"
-				view="menus"
-				img="class:restaurant-menus"
-				alt="Restaurant/Menus">com_restaurant_menus</menu>
+				link="option=com_restaurant&amp;view=dishes"
+				view="dishes"
+				img="class:restaurant-dishes"
+				alt="Restaurant/Dishes">com_restaurant_dishes</menu>
 			<menu
 				link="option=com_categories&amp;extension=com_restaurant"
 				view="categories"
@@ -105,7 +105,7 @@
 		ones marked optional are only backed up if they exist.
 	-->
 	<tables>
-		<table>#__restaurant_menus</table>
-		<table>#__restaurant_menus_frontpage</table>
+		<table>#__restaurant_dishes</table>
+		<table>#__restaurant_dishes_frontpage</table>
 	</tables>
 </extension>

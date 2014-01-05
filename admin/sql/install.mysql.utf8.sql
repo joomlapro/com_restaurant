@@ -1,9 +1,10 @@
-CREATE TABLE `#__restaurant_menus` (
+CREATE TABLE `#__restaurant_dishes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `asset_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'FK to the #__assets table.',
   `catid` int(10) unsigned NOT NULL DEFAULT '0',
   `title` varchar(255) NOT NULL DEFAULT '',
   `alias` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT '',
+  `potluck` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `description` text NOT NULL,
   `state` tinyint(3) NOT NULL DEFAULT '0',
   `ordering` int(11) unsigned NOT NULL DEFAULT '0',
@@ -38,8 +39,8 @@ CREATE TABLE `#__restaurant_menus` (
   KEY `idx_xreference` (`xreference`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `#__restaurant_menus_frontpage` (
-  `menu_id` int(11) NOT NULL DEFAULT '0',
+CREATE TABLE `#__restaurant_dishes_frontpage` (
+  `dish_id` int(11) NOT NULL DEFAULT '0',
   `ordering` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`menu_id`)
+  PRIMARY KEY (`dish_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

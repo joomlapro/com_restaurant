@@ -218,7 +218,7 @@
 			translate_label="false"
 			filter="rules"
 			component="com_restaurant"
-			section="menu"
+			section="dish"
 			validate="rules" />
 	</fieldset>
 	<fields
@@ -450,13 +450,13 @@
 				description="JFIELD_READMORE_DESC"
 				size="25" />
 			<field
-				name="menu_layout"
+				name="dish_layout"
 				type="componentlayout"
 				label="JFIELD_ALT_LAYOUT_LABEL"
 				description="JFIELD_ALT_COMPONENT_LAYOUT_DESC"
 				useglobal="true"
 				extension="com_restaurant"
-				view="menu" />
+				view="dish" />
 		</fieldset>
 		<fieldset
 			name="editorConfig"
@@ -473,11 +473,11 @@
 				<option value="1">JYES</option>
 			</field>
 			<field
-				name="show_menu_options"
+				name="show_dish_options"
 				type="list"
 				class="chzn-color"
-				label="COM_RESTAURANT_FIELD_SHOW_MENU_OPTIONS_LABEL"
-				description="COM_RESTAURANT_FIELD_SHOW_MENU_OPTIONS_DESC"
+				label="COM_RESTAURANT_FIELD_SHOW_DISH_OPTIONS_LABEL"
+				description="COM_RESTAURANT_FIELD_SHOW_DISH_OPTIONS_DESC"
 				default="">
 				<option value="">JGLOBAL_USE_GLOBAL</option>
 				<option value="0">JNO</option>
@@ -631,13 +631,13 @@
 				description="JFIELD_READMORE_DESC"
 				size="25" />
 			<field
-				name="menu_layout"
+				name="dish_layout"
 				type="hidden"
 				label="JFIELD_ALT_LAYOUT_LABEL"
 				description="JFIELD_ALT_COMPONENT_LAYOUT_DESC"
 				useglobal="true"
 				extension="com_restaurant"
-				view="menu" />
+				view="dish" />
 		</fieldset>
 	</fields>
 	<field

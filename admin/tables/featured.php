@@ -30,6 +30,6 @@ class RestaurantTableFeatured extends JTable
 	 */
 	public function __construct(& $db)
 	{
-		parent::__construct('#__restaurant_menus_frontpage', 'menu_id', $db);
+		parent::__construct('#__restaurant_dishes_frontpage', 'dish_id', $db);
 	}
 }

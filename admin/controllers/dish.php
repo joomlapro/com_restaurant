@@ -12,22 +12,30 @@
 defined('_JEXEC') or die;
 
 /**
- * Menu controller class.
+ * Dish controller class.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class RestaurantControllerMenu extends JControllerForm
+class RestaurantControllerDish extends JControllerForm
 {
+	/**
+	 * The URL view list variable.
+	 *
+	 * @var     string
+	 * @since   3.2
+	 */
+	protected $view_list = 'dishes';
+
 	/**
 	 * The prefix to use with controller messages.
 	 *
 	 * @var     string
 	 * @since   3.2
 	 */
-	protected $text_prefix = 'COM_RESTAURANT_MENU';
+	protected $text_prefix = 'COM_RESTAURANT_DISH';
 
 	/**
 	 * Constructor.
@@ -41,12 +49,12 @@ class RestaurantControllerMenu extends JControllerForm
 	{
 		parent::__construct($config);
 
-		// An menu edit form can come from the menus or featured view.
+		// An dish edit form can come from the dishes or featured view.
 		// Adjust the redirect view on the value of 'return' in the request.
 		if ($this->input->get('return') == 'featured')
 		{
 			$this->view_list = 'featured';
-			$this->view_item = 'menu&return=featured';
+			$this->view_item = 'dish&return=featured';
 		}
 	}
 
@@ -101,14 +109,14 @@ class RestaurantControllerMenu extends JControllerForm
 		$userId   = $user->get('id');
 
 		// Check general edit permission first.
-		if ($user->authorise('core.edit', 'com_restaurant.menu.' . $recordId))
+		if ($user->authorise('core.edit', 'com_restaurant.dish.' . $recordId))
 		{
 			return true;
 		}
 
 		// Fallback on edit.own.
 		// First test if the permission is available.
-		if ($user->authorise('core.edit.own', 'com_restaurant.menu.' . $recordId))
+		if ($user->authorise('core.edit.own', 'com_restaurant.dish.' . $recordId))
 		{
 			// Now test the owner is the user.
 			$ownerId = (int) isset($data['created_by']) ? $data['created_by'] : 0;
@@ -152,10 +160,10 @@ class RestaurantControllerMenu extends JControllerForm
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 
 		// Set the model.
-		$model = $this->getModel('Menu', 'RestaurantModel', array());
+		$model = $this->getModel('Dish', 'RestaurantModel', array());
 
 		// Preset the redirect.
-		$this->setRedirect(JRoute::_('index.php?option=com_restaurant&view=menus' . $this->getRedirectToListAppend(), false));
+		$this->setRedirect(JRoute::_('index.php?option=com_restaurant&view=dishes' . $this->getRedirectToListAppend(), false));
 
 		return parent::batch($model);
 	}

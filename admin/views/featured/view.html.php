@@ -12,7 +12,7 @@
 defined('_JEXEC') or die;
 
 /**
- * View class for a list of featured menus.
+ * View class for a list of featured dishes.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
@@ -130,36 +130,36 @@ class RestaurantViewFeatured extends JViewLegacy
 	{
 		// Initialise variables.
 		$state = $this->get('State');
-		$canDo = MenusHelper::getActions($this->state->get('filter.category_id'), 0, 'com_restaurant');
+		$canDo = DishesHelper::getActions($this->state->get('filter.category_id'), 0, 'com_restaurant');
 		$user  = JFactory::getUser();
 
 		JToolbarHelper::title(JText::_('COM_RESTAURANT_MANAGER_FEATURED_TITLE'), 'star featured');
 
 		if ($canDo->get('core.create') && count($user->getAuthorisedCategories('com_restaurant', 'core.create')) > 0)
 		{
-			JToolbarHelper::addNew('menu.add');
+			JToolbarHelper::addNew('dish.add');
 		}
 		if (($canDo->get('core.edit')) || ($canDo->get('core.edit.own')))
 		{
-			JToolbarHelper::editList('menu.edit');
+			JToolbarHelper::editList('dish.edit');
 		}
 
 		if ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::publish('menus.publish', 'JTOOLBAR_PUBLISH', true);
-			JToolbarHelper::unpublish('menus.unpublish', 'JTOOLBAR_UNPUBLISH', true);
+			JToolbarHelper::publish('dishes.publish', 'JTOOLBAR_PUBLISH', true);
+			JToolbarHelper::unpublish('dishes.unpublish', 'JTOOLBAR_UNPUBLISH', true);
 			JToolbarHelper::custom('featured.delete', 'remove.png', 'remove_f2.png', 'JTOOLBAR_REMOVE', true);
-			JToolbarHelper::archiveList('menus.archive');
-			JToolbarHelper::checkin('menus.checkin');
+			JToolbarHelper::archiveList('dishes.archive');
+			JToolbarHelper::checkin('dishes.checkin');
 		}
 
 		if ($state->get('filter.state') == - 2 && $canDo->get('core.delete'))
 		{
-			JToolbarHelper::deleteList('', 'menus.delete', 'JTOOLBAR_EMPTY_TRASH');
+			JToolbarHelper::deleteList('', 'dishes.delete', 'JTOOLBAR_EMPTY_TRASH');
 		}
 		elseif ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::trash('menus.trash');
+			JToolbarHelper::trash('dishes.trash');
 		}
 
 		if ($user->authorise('core.admin', 'com_restaurant'))

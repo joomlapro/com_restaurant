@@ -12,14 +12,14 @@
 defined('_JEXEC') or die;
 
 /**
- * Menus helper.
+ * Dishes helper.
  *
  * @package     Restaurant
  * @subpackage  com_restaurant
  * @author      Bruno Batista <bruno@atomtech.com.br>
  * @since       3.2
  */
-class MenusHelper extends JHelperContent
+class DishesHelper extends JHelperContent
 {
 	/**
 	 * Gets a list of the actions that can be performed.
@@ -50,8 +50,8 @@ class MenusHelper extends JHelperContent
 		}
 		else
 		{
-			$section = 'menu';
-			$assetName .= '.menu.' . (int) $id;
+			$section = 'dish';
+			$assetName .= '.dish.' . (int) $id;
 		}
 
 		$actions = JAccess::getActionsFromFile($path, "/access/section[@name='" . $section . "']/");
