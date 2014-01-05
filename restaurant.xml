@@ -1,1 +1,111 @@
-jcomponentmanifest
+<?xml version="1.0" encoding="utf-8"?>
+<extension
+	version="3.2"
+	type="component"
+	method="upgrade">
+	<name>com_restaurant</name>
+	<author>Bruno Batista</author>
+	<creationDate>Jan 2014</creationDate>
+	<copyright>Copyright (C) 2014 AtomTech, Inc. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>bruno@atomtech.com.br</authorEmail>
+	<authorUrl>http://www.atomtech.com.br</authorUrl>
+	<version>1.0</version>
+	<description>COM_RESTAURANT_XML_DESCRIPTION</description>
+	<scriptfile>script.php</scriptfile>
+	<!-- Runs on install. -->
+	<install>
+		<sql>
+			<file
+				driver="mysql"
+				charset="utf8">sql/install.mysql.utf8.sql</file>
+			<file
+				driver="postgresql"
+				charset="utf8">sql/install.postgresql.utf8.sql</file>
+		</sql>
+	</install>
+	<!-- Runs on uninstall. -->
+	<uninstall>
+		<sql>
+			<file
+				driver="mysql"
+				charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+			<file
+				driver="postgresql"
+				charset="utf8">sql/uninstall.postgresql.utf8.sql</file>
+		</sql>
+	</uninstall>
+	<update>
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+			<schemapath type="postgresql">sql/updates/postgresql</schemapath>
+		</schemas>
+	</update>
+	<files folder="site">
+		<filename>controller.php</filename>
+		<filename>index.html</filename>
+		<filename>metadata.xml</filename>
+		<filename>router.php</filename>
+		<filename>restaurant.php</filename>
+		<folder>controllers</folder>
+		<folder>helpers</folder>
+		<folder>models</folder>
+		<folder>views</folder>
+	</files>
+	<languages folder="site">
+		<language tag="en-GB">language/en-GB/en-GB.com_restaurant.ini</language>
+		<language tag="pt-BR">language/pt-BR/pt-BR.com_restaurant.ini</language>
+	</languages>
+	<administration>
+		<menu img="class:restaurant">com_restaurant</menu>
+		<submenu>
+			<!--
+				Note that all & must be escaped to &amp;
+				for the file to be valid XML and be parsed by the installer.
+			-->
+			<menu
+				link="option=com_restaurant&amp;view=menus"
+				view="menus"
+				img="class:restaurant-menus"
+				alt="Restaurant/Menus">com_restaurant_menus</menu>
+			<menu
+				link="option=com_categories&amp;extension=com_restaurant"
+				view="categories"
+				img="class:restaurant-cat"
+				alt="Restaurant/Categories">com_restaurant_categories</menu>
+			<menu
+				link="option=com_restaurant&amp;view=featured"
+				view="featured"
+				img="class:restaurant-featured"
+				alt="Restaurant/Featured">com_restaurant_featured</menu>
+		</submenu>
+		<files folder="admin">
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>
+			<filename>restaurant.php</filename>
+			<folder>controllers</folder>
+			<folder>help</folder>
+			<folder>helpers</folder>
+			<folder>models</folder>
+			<folder>sql</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+		</files>
+		<languages folder="admin">
+			<language tag="en-GB">language/en-GB/en-GB.com_restaurant.ini</language>
+			<language tag="en-GB">language/en-GB/en-GB.com_restaurant.sys.ini</language>
+			<language tag="pt-BR">language/pt-BR/pt-BR.com_restaurant.ini</language>
+			<language tag="pt-BR">language/pt-BR/pt-BR.com_restaurant.sys.ini</language>
+		</languages>
+	</administration>
+	<!--
+		These are used for backups to determine which tables to backup;
+		ones marked optional are only backed up if they exist.
+	-->
+	<tables>
+		<table>#__restaurant_menus</table>
+		<table>#__restaurant_menus_frontpage</table>
+	</tables>
+</extension>
