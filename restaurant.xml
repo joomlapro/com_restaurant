@@ -56,6 +56,14 @@
 		<language tag="en-GB">language/en-GB/en-GB.com_restaurant.ini</language>
 		<language tag="pt-BR">language/pt-BR/pt-BR.com_restaurant.ini</language>
 	</languages>
+	<media
+		destination="com_restaurant"
+		folder="media">
+		<folder>css</folder>
+		<folder>images</folder>
+		<folder>js</folder>
+		<filename>index.html</filename>
+	</media>
 	<administration>
 		<menu img="class:restaurant">com_restaurant</menu>
 		<submenu>
